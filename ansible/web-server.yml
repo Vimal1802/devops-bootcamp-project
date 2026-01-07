@@ -1,0 +1,96 @@
+---
+- name: Deploy DevOps Web App with ECR Integration
+  hosts: web_server
+  become: true
+
+  vars:
+    # PASTE YOUR TERRAFORM OUTPUTS HERE
+    ecr_url: "123456789012.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp/final-project-vimaldeep"
+    ecr_registry: "123456789012.dkr.ecr.ap-southeast-1.amazonaws.com"
+    app_path: "/var/www/my-devops-project"
+
+  roles:
+    - role: geerlingguy.docker
+      vars:
+        docker_install_compose: true
+
+  tasks:
+    # ==========================================================
+    # 1. INSTALL SYSTEM DEPENDENCIES (UBUNTU 24.04 FIX)
+    # ==========================================================
+    - name: Install Git, Unzip, and Python dependencies
+      ansible.builtin.apt:
+        name:
+          - git
+          - unzip
+          - python3-pip
+        state: present
+        update_cache: yes
+
+    - name: Download AWS CLI v2 installer
+      ansible.builtin.get_url:
+        url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+        dest: "/tmp/awscliv2.zip"
+        mode: '0644'
+
+    - name: Unarchive AWS CLI installer
+      ansible.builtin.unarchive:
+        src: "/tmp/awscliv2.zip"
+        dest: "/tmp"
+        remote_src: yes
+
+    - name: Install AWS CLI v2
+      ansible.builtin.command: "/tmp/aws/install --update"
+      args:
+        creates: "/usr/local/bin/aws"
+
+    # ==========================================================
+    # 2. SOURCE CODE & CONFIGURATION
+    # ==========================================================
+    - name: Clone the repository
+      ansible.builtin.git:
+        repo: 'https://github.com/Infratify/lab-final-project.git'
+        dest: "{{ app_path }}"
+        force: yes
+
+    - name: Login to Amazon ECR
+      ansible.builtin.shell: |
+        aws ecr get-login-password --region ap-southeast-1 | \
+        docker login --username AWS --password-stdin {{ ecr_registry }}
+      changed_when: false
+
+    - name: Patch docker-compose (Update Image and Port)
+      ansible.builtin.replace:
+        path: "{{ app_path }}/docker-compose.yml"
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.replace }}"
+      loop:
+        - { regexp: 'image:.*', replace: "image: {{ ecr_url }}:latest" }
+        - { regexp: '["'']?8080:80["'']?', replace: '"80:80"' }
+
+    # ==========================================================
+    # 3. BUILD, PUSH, AND DEPLOY (DOCKER FIX)
+    # ==========================================================
+    
+    - name: Build and Push image to ECR
+      # We use docker_image here because it supports the 'push' parameter
+      community.docker.docker_image:
+        name: "{{ ecr_url }}"
+        tag: latest
+        push: yes
+        source: build
+        build:
+          path: "{{ app_path }}"
+          pull: yes
+      environment:
+        USER_NAME: "Vimaldeep Singh Wathan"
+
+    - name: Run Application with Docker Compose
+      # Compose handles the container orchestration
+      community.docker.docker_compose_v2:
+        project_src: "{{ app_path }}"
+        state: present
+        pull: always
+        remove_orphans: yes
+      environment:
+        USER_NAME: "Vimaldeep Singh Wathan"

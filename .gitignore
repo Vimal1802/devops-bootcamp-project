@@ -1,0 +1,35 @@
+# --- Terraform ---
+# Local .terraform directories (contains plugins/modules)
+**/.terraform/*
+
+# .tfstate files (Contains sensitive data & infrastructure state)
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude sensitive variable files
+*.tfvars
+*.tfvars.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# --- Ansible ---
+# Ignore retry files (created when a playbook fails)
+*.retry
+
+# Ignore roles downloaded from Galaxy (usually managed via requirements.yml)
+# roles/
+
+# Ignore sensitive variable files/vaults if not encrypted
+# secrets.yml
+# .vault_pass
+
+# --- General ---
+# OS generated files
+.DS_Store
+Thumbs.db

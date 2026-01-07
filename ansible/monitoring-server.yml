@@ -1,0 +1,47 @@
+---
+# PART 1: Web Server Monitoring
+- name: Install Node Exporter
+  hosts: Web_Server           # <--- Capitalized to match Tag
+  become: true
+  roles:
+    - prometheus.prometheus.node_exporter
+
+# PART 2: Setup Monitoring Hub
+- name: Setup Monitoring Hub
+  hosts: Monitoring_Server    # <--- Capitalized to match Tag
+  become: true
+  
+  vars:
+    grafana_ini:
+      security:
+        admin_user: "admin"
+        admin_password: "admin"
+      server:
+        domain: "monitoring.vimalops.com"
+        root_url: "https://monitoring.vimalops.com"
+        http_port: 3000
+
+    custom_monitoring_targets:
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+      - job_name: 'web_server_node'
+        static_configs:
+          - targets: ['10.0.0.5:9100']
+
+  roles:
+    - geerlingguy.docker
+    - role: prometheus.prometheus.prometheus
+      vars:
+        prometheus_scrape_configs: "{{ custom_monitoring_targets }}"
+    - grafana.grafana.grafana
+
+  tasks:
+    - name: Run Cloudflare Tunnel Container
+      community.docker.docker_container:
+        name: cloudflared-tunnel
+        image: cloudflare/cloudflared:latest
+        state: started
+        restart_policy: always
+        command: "tunnel --no-autoupdate run --token {{ cloudflare_token }}"
+        network_mode: host
