@@ -56,4 +56,3 @@ jobs:
               "git pull origin main",
               "ansible-playbook ansible/web-server.yml -e \"image_tag=${{ github.sha }}\""
             ]'
-EOF
