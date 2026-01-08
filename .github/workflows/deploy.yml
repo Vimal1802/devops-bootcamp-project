@@ -59,3 +59,64 @@ jobs:
               "ansible-playbook ansible/web-server.yml -e \"image_tag=${{ github.sha }}\""
             ]'
 EOF
+cat <<EOF > .github/workflows/deploy.yml
+name: OIDC Build and SSM Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::\${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-oidc-role
+          aws-region: \${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push to ECR
+        env:
+          ECR_REGISTRY: \${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: devops-bootcamp-project
+          IMAGE_TAG: \${{ github.sha }}
+        run: |
+          docker build -t \$ECR_REGISTRY/\$ECR_REPOSITORY:\$IMAGE_TAG .
+          docker build -t \$ECR_REGISTRY/\$ECR_REPOSITORY:latest .
+          docker push \$ECR_REGISTRY/\$ECR_REPOSITORY:\$IMAGE_TAG
+          docker push \$ECR_REGISTRY/\$ECR_REPOSITORY:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::\${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-oidc-role
+          aws-region: \${{ secrets.AWS_REGION }}
+
+      - name: Trigger Deployment via SSM
+        run: |
+          aws ssm send-command \\
+            --document-name "AWS-RunShellScript" \\
+            --targets "Key=instanceids,Values=\${{ secrets.INSTANCE_ID }}" \\
+            --parameters 'commands=[
+              "cd /home/ubuntu/devops-bootcamp-project",
+              "git pull origin main",
+              "ansible-playbook ansible/web-server.yml -e \"image_tag=\${{ github.sha }}\""
+            ]'
+EOF
