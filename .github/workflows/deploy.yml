@@ -1,5 +1,5 @@
 cat <<'EOF' > .github/workflows/deploy.yml
-name: OIDC Build and SSM Deploy
+- name: OIDC Build and SSM Deploy
 
 on:
 push:
