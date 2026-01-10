@@ -55,6 +55,8 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
             --parameters 'commands=[
+              "sudo chown -R ubuntu:ubuntu /home/ubuntu/ansible",
+              "git config --global --add safe.directory /home/ubuntu/ansible",
               "cd /home/ubuntu/ansible",
               "if [ ! -d .git ]; then git init && git remote add origin https://github.com/Vimal1802/devops-bootcamp-project.git; fi",
               "git fetch origin main",
