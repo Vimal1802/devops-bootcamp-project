@@ -36,7 +36,7 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
-  deploy:
+deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
@@ -48,15 +48,19 @@ jobs:
 
       - name: Trigger Deployment via SSM
         run: |
+          # We reconstruct the ECR URL since the output from the previous job isn't here
+          ECR_REGISTRY="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+          
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
-            --parameters 'commands=[
-              "cd /home/ubuntu/ansible",
-              "git fetch origin main",
-              "git reset --hard origin/main",
-              "ansible-playbook web-server.yml \
-                -i inventory \
-                -e \"image_tag=${{ github.sha }}\" \
-                -e \"ecr_registry=${{ steps.login-ecr.outputs.registry }}\""
-            ]'
+            --parameters "commands=[
+              'sudo apt-get update -y && sudo apt-get install -y ansible git',
+              'mkdir -p /home/ubuntu/ansible',
+              'cd /home/ubuntu/ansible',
+              'if [ ! -d .git ]; then git clone https://github.com/Vimal1802/devops-bootcamp-project.git .; fi',
+              'git fetch origin main',
+              'git reset --hard origin/main',
+              'ansible-galaxy install geerlingguy.docker',
+              'ansible-playbook web-server.yml -i inventory -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry=$ECR_REGISTRY\" -e \"ecr_url=$ECR_REGISTRY/devops-bootcamp/final-project-vimaldeep\"'
+            ]"
