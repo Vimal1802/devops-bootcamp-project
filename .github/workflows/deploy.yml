@@ -63,5 +63,5 @@ jobs:
               "sudo -u ubuntu git remote add origin https://github.com/Vimal1802/devops-bootcamp-project.git || true",
               "sudo -u ubuntu git fetch origin main",
               "sudo -u ubuntu git reset --hard origin/main",
-              "ansible-playbook web-server.yml -i inventory -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry='$ECR_REGISTRY'\" -e \"ecr_url='$ECR_REGISTRY/$REPO_NAME'\""
+              "ansible-playbook web-server.yml -i inventory.ini -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry='$ECR_REGISTRY'\" -e \"ecr_url='$ECR_REGISTRY/$REPO_NAME'\""
             ]'
