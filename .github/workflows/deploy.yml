@@ -54,5 +54,5 @@ jobs:
             --parameters 'commands=[
               "cd /home/ubuntu/devops-bootcamp-project",
               "git pull origin main",
-              "ansible-playbook ansible/web-server.yml -e \"image_tag=${{ github.sha }}\""
+              "ansible-playbook ansible/web-server.yml -e \"image_tag=${{ github.sha }}\" -e \"ecr_url=${{ steps.login-ecr.outputs.registry }}/devops-bootcamp-project\" -e \"ecr_registry=${{ steps.login-ecr.outputs.registry }}\""
             ]'
