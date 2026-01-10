@@ -1,6 +1,6 @@
 ---
 - name: Deploy DevOps Web App with ECR Integration
-  hosts: web_server
+  hosts: web
   become: true
 
   vars:
