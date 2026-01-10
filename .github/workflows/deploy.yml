@@ -61,6 +61,13 @@ jobs:
               "sudo chown ubuntu:ubuntu /home/ubuntu/ansible",
               "cd /home/ubuntu/ansible",
               "sudo -u ubuntu git clone https://github.com/Vimal1802/devops-bootcamp-project.git .",
-              "ls -la /home/ubuntu/ansible",
-              "ansible-playbook /home/ubuntu/ansible/web-server.yml -i /home/ubuntu/ansible/inventory.ini -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry=$ECR_REGISTRY\" -e \"ecr_url=$ECR_REGISTRY/$REPO_NAME\""
+              
+              # This line finds the real path of your files automatically
+              "PLAYBOOK_PATH=$(find . -name \"web-server.yml\")",
+              "INVENTORY_PATH=$(find . -name \"inventory.ini\")",
+              
+              "echo \"Found playbook at: $PLAYBOOK_PATH\"",
+              "echo \"Found inventory at: $INVENTORY_PATH\"",
+              
+              "sudo -u ubuntu ansible-playbook $PLAYBOOK_PATH -i $INVENTORY_PATH -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry=$ECR_REGISTRY\" -e \"ecr_url=$ECR_REGISTRY/$REPO_NAME\""
             ]'
