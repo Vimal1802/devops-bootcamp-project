@@ -55,11 +55,13 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
             --parameters 'commands=[
-              "sudo chown -R ubuntu:ubuntu /home/ubuntu/ansible",
-              "git config --global --add safe.directory /home/ubuntu/ansible",
+              "export HOME=/home/ubuntu",
               "cd /home/ubuntu/ansible",
-              "if [ ! -d .git ]; then git init && git remote add origin https://github.com/Vimal1802/devops-bootcamp-project.git; fi",
-              "git fetch origin main",
-              "git reset --hard origin/main",
+              "sudo chown -R ubuntu:ubuntu /home/ubuntu/ansible",
+              "sudo -u ubuntu git config --global --add safe.directory /home/ubuntu/ansible",
+              "sudo -u ubuntu git init",
+              "sudo -u ubuntu git remote add origin https://github.com/Vimal1802/devops-bootcamp-project.git || true",
+              "sudo -u ubuntu git fetch origin main",
+              "sudo -u ubuntu git reset --hard origin/main",
               "ansible-playbook web-server.yml -i inventory -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry='$ECR_REGISTRY'\" -e \"ecr_url='$ECR_REGISTRY/$REPO_NAME'\""
             ]'
