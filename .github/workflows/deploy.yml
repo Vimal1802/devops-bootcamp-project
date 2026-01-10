@@ -50,15 +50,14 @@ jobs:
         run: |
           ECR_REGISTRY="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
           REPO_NAME="devops-bootcamp/final-project-vimaldeep"
-
+          
           aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
-            --parameters "commands=[
-              'cd /home/ubuntu/ansible',
-              # This line fixes the 'fatal: not a git repository' error forever
-              'if [ ! -d .git ]; then git init && git remote add origin https://github.com/Vimal1802/devops-bootcamp-project.git; fi',
-              'git fetch origin main',
-              'git reset --hard origin/main',
-              'ansible-playbook web-server.yml -i inventory -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry=$ECR_REGISTRY\" -e \"ecr_url=$ECR_REGISTRY/$REPO_NAME\"'
-            ]"
+            --parameters 'commands=[
+              "cd /home/ubuntu/ansible",
+              "if [ ! -d .git ]; then git init && git remote add origin https://github.com/Vimal1802/devops-bootcamp-project.git; fi",
+              "git fetch origin main",
+              "git reset --hard origin/main",
+              "ansible-playbook web-server.yml -i inventory -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry='$ECR_REGISTRY'\" -e \"ecr_url='$ECR_REGISTRY/$REPO_NAME'\""
+            ]'
