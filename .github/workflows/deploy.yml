@@ -56,9 +56,11 @@ jobs:
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
             --parameters 'commands=[
               "export HOME=/home/ubuntu",
-              "mkdir -p /home/ubuntu/ansible",
+              "sudo rm -rf /home/ubuntu/ansible",
+              "sudo mkdir -p /home/ubuntu/ansible",
+              "sudo chown ubuntu:ubuntu /home/ubuntu/ansible",
               "cd /home/ubuntu/ansible",
-              "sudo rm -rf ./* ./.* 2>/dev/null || true",
               "sudo -u ubuntu git clone https://github.com/Vimal1802/devops-bootcamp-project.git .",
-              "ansible-playbook web-server.yml -i inventory.ini -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry=$ECR_REGISTRY\" -e \"ecr_url=$ECR_REGISTRY/$REPO_NAME\""
+              "ls -la /home/ubuntu/ansible",
+              "ansible-playbook /home/ubuntu/ansible/web-server.yml -i /home/ubuntu/ansible/inventory.ini -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry=$ECR_REGISTRY\" -e \"ecr_url=$ECR_REGISTRY/$REPO_NAME\""
             ]'
