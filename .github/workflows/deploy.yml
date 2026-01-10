@@ -56,12 +56,11 @@ jobs:
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
             --parameters 'commands=[
               "export HOME=/home/ubuntu",
+              "mkdir -p /home/ubuntu/ansible",
               "cd /home/ubuntu/ansible",
-              "sudo chown -R ubuntu:ubuntu /home/ubuntu/ansible",
-              "sudo -u ubuntu git config --global --add safe.directory /home/ubuntu/ansible",
-              "sudo -u ubuntu git init",
-              "sudo -u ubuntu git remote add origin https://github.com/Vimal1802/devops-bootcamp-project.git || true",
-              "sudo -u ubuntu git fetch origin main",
-              "sudo -u ubuntu git reset --hard origin/main",
-              "ansible-playbook web-server.yml -i inventory.ini -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry='$ECR_REGISTRY'\" -e \"ecr_url='$ECR_REGISTRY/$REPO_NAME'\""
+              # Wipe the old directory to avoid "dubious ownership" and start fresh
+              "sudo rm -rf ./* ./.* 2>/dev/null || true",
+              "sudo -u ubuntu git clone https://github.com/Vimal1802/devops-bootcamp-project.git .",
+              # Run the playbook using the specific inventory file
+              "ansible-playbook web-server.yml -i inventory.ini -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry=$ECR_REGISTRY\" -e \"ecr_url=$ECR_REGISTRY/$REPO_NAME\""
             ]'
