@@ -8,7 +8,7 @@
     ecr_url: ""
     ecr_registry: ""
     # Path ON THE CONTROLLER (where Git pulls the code)
-    controller_src: "/home/ubuntu/ansible"
+    controller_src: "/home/ubuntu/ansible/lab-final-project"
     # Path ON THE WEB SERVER (where the app will run)
     web_server_dest: "/home/ubuntu/app"
 
