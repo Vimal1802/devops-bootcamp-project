@@ -52,7 +52,11 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
             --parameters 'commands=[
-              "cd /home/ubuntu/devops-bootcamp-project",
-              "git pull origin main",
-              "ansible-playbook ansible/web-server.yml -e \"image_tag=${{ github.sha }}\" -e \"ecr_url=${{ steps.login-ecr.outputs.registry }}/devops-bootcamp-project\" -e \"ecr_registry=${{ steps.login-ecr.outputs.registry }}\""
+              "cd /home/ubuntu/ansible",
+              "git fetch origin main",
+              "git reset --hard origin/main",
+              "ansible-playbook web-server.yml \
+                -i inventory \
+                -e \"image_tag=${{ github.sha }}\" \
+                -e \"ecr_registry=${{ steps.login-ecr.outputs.registry }}\""
             ]'
