@@ -10,6 +10,32 @@
     app_path: "/home/ubuntu/"
 
   tasks:
+    # 1. Manual AWS CLI v2 Installation (Your preferred method)
+    - name: Install AWS CLI v2 dependencies
+      ansible.builtin.apt:
+        name: [unzip, curl]
+        state: present
+        update_cache: yes
+
+    - name: Download and Install AWS CLI v2
+      ansible.builtin.shell: |
+        if ! command -v aws &> /dev/null; then
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+          unzip -o /tmp/awscliv2.zip -d /tmp/
+          /tmp/aws/install
+          rm -rf /tmp/aws /tmp/awscliv2.zip
+        fi
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+  # 2. Run the heavy Docker Role (Uses S3 bucket from inventory)
+  roles:
+    - role: geerlingguy.docker
+      vars:
+        docker_install_compose: true
+        docker_users: ["ubuntu"]
+
     - name: ECR Login
       ansible.builtin.shell: |
         # This regex extracts the domain part even if a full path is passed
