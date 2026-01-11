@@ -1,5 +1,4 @@
----
-- name: Application Deployment
+- name: Install AWS CLI and Docker
   hosts: web_server
   become: true
 
@@ -9,11 +8,13 @@
     ecr_registry: "927428187886.dkr.ecr.ap-southeast-1.amazonaws.com"
     app_path: "/home/ubuntu/"
 
-  tasks:
-    # 1. Manual AWS CLI v2 Installation (Your preferred method)
+  # 1. We use pre_tasks to ensure AWS CLI installs BEFORE the Docker role runs
+  pre_tasks:
     - name: Install AWS CLI v2 dependencies
       ansible.builtin.apt:
-        name: [unzip, curl]
+        name:
+          - unzip
+          - curl
         state: present
         update_cache: yes
 
@@ -29,34 +30,26 @@
         executable: /bin/bash
       changed_when: false
 
-  # 2. Run the heavy Docker Role (Uses S3 bucket from inventory)
+  # 2. Run the heavy Docker Role
   roles:
     - role: geerlingguy.docker
       vars:
         docker_install_compose: true
         docker_users: ["ubuntu"]
 
-    - name: ECR Login
+  # 3. Add your deployment tasks here (ECR Login, Pull, Run)
+  tasks:
+    - name: Login to Amazon ECR
       ansible.builtin.shell: |
-        # This regex extracts the domain part even if a full path is passed
         aws ecr get-login-password --region ap-southeast-1 | \
         docker login --username AWS --password-stdin {{ ecr_registry }}
       changed_when: false
 
-    - name: Patch docker-compose (Update Image and Port)
-      ansible.builtin.replace:
-        path: "{{ app_path }}/docker-compose.yml"
-        regexp: "{{ item.regexp }}"
-        replace: "{{ item.replace }}"
-      loop:
-        - { regexp: 'image:.*', replace: "image: {{ ecr_url }}:latest" }
-        - { regexp: '["'']?8080:80["'']?', replace: "'80:80'" }
-
-    - name: Pull and Restart
+    - name: Pull and Restart Application
       ansible.builtin.shell: |
         export ECR_URL="{{ ecr_url }}"
         export IMAGE_TAG="{{ image_tag }}"
-        export USER_NAME="Vimaldeep Singh Wathan"
+        export USER_NAME="PLEASE WORK"
         docker compose -f {{ app_path }}/docker-compose.yml pull
         docker compose -f {{ app_path }}/docker-compose.yml up -d --force-recreate
       args:
