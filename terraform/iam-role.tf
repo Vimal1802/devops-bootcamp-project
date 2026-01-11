@@ -38,7 +38,7 @@ resource "aws_iam_role_policy" "github_combined_policy" {
         Effect = "Allow"
         Action = [
           "ecr:GetAuthorizationToken",
-          "ecr:BatchPush*",
+          "ecr:BatchCheckLayerAvailability",
           "ecr:PutImage",
           "ecr:InitiateLayerUpload",
           "ecr:UploadLayerPart",
