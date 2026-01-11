@@ -52,9 +52,8 @@ jobs:
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
             --parameters 'commands=[
-              "export HOME=/home/ubuntu",
               "cd /home/ubuntu/ansible",
-              "ansible-playbook web-server.yml -i inventory.ini \
+              "sudo -u ubuntu /home/ubuntu/.local/bin/ansible-playbook web-server.yml -i inventory.ini \
                 -e \"ecr_url=${{ secrets.ECR_URL }}\" \
                 -e \"ecr_registry=${{ secrets.ECR_REGISTRY }}\" \
                 -e \"image_tag=${{ github.sha }}\""
