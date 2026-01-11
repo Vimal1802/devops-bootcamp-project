@@ -51,7 +51,7 @@ jobs:
           ECR_REGISTRY="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
           REPO_NAME="devops-bootcamp/final-project-vimaldeep"
           
-        aws ssm send-command \
+          aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
             --parameters 'commands=[
