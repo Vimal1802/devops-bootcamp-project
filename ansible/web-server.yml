@@ -1,72 +1,31 @@
 ---
-- name: Deploy DevOps Web App with ECR Integration
-  hosts: web
+- name: Deploy DevOps Web App
+  hosts: web_server
   become: true
 
   vars:
-    image_tag: "latest"
+    # Placeholders that get filled by the -e flags above
     ecr_url: ""
     ecr_registry: ""
-    # Path ON THE CONTROLLER (where Git pulls the code)
-    controller_src: "/home/ubuntu/ansible/lab-final-project"
-    # Path ON THE WEB SERVER (where the app will run)
-    web_server_dest: "/home/ubuntu/app"
-
-  roles:
-    - role: geerlingguy.docker
-      vars:
-        docker_install_compose: true
+    image_tag: ""
+    app_path: "/home/ubuntu/ansible"
 
   tasks:
-    # 1. PREPARE SYSTEM
-    - name: Install Python dependencies
-      ansible.builtin.apt:
-        name: python3-pip
-        state: present
-        update_cache: yes
-
-    - name: Install Docker python SDK
-      ansible.builtin.pip:
-        name: 
-          - docker
-          - docker-compose
-        state: present
-
-    # 2. THE "PRODUCTION" LINK: Copy file from Controller to Web Server
-    - name: Ensure app directory exists on Web Server
-      ansible.builtin.file:
-        path: "{{ web_server_dest }}"
-        state: directory
-        mode: '0755'
-
-    - name: Transfer docker-compose.yml to Web Server
-      ansible.builtin.copy:
-        src: "{{ controller_src }}/docker-compose.yml"
-        dest: "{{ web_server_dest }}/docker-compose.yml"
-        mode: '0644'
-
-    # 3. AUTHENTICATE & PULL
+    # 1. AUTHENTICATE
     - name: Login to Amazon ECR
       ansible.builtin.shell: |
         aws ecr get-login-password --region ap-southeast-1 | \
         docker login --username AWS --password-stdin {{ ecr_registry }}
       changed_when: false
 
-    # 4. PATCH & DEPLOY (Using the Web Server path)
-    - name: Patch docker-compose (Update Image and Port)
-      ansible.builtin.replace:
-        path: "{{ web_server_dest }}/docker-compose.yml"
-        regexp: "{{ item.regexp }}"
-        replace: "{{ item.replace }}"
-      loop:
-        - { regexp: 'image:.*', replace: "image: {{ ecr_url }}:{{ image_tag }}" }
-        - { regexp: '["'']?\d+:80["'']?', replace: '"80:80"' }
-
-    - name: Run Application with Docker Compose
+    # 2. RUN APPLICATION
+    - name: Start Container with Docker Compose
       community.docker.docker_compose_v2:
-        project_src: "{{ web_server_dest }}"
+        project_src: "{{ app_path }}"
         state: present
         pull: always
-        remove_orphans: yes
       environment:
+        # This matches the ${} placeholders in your docker-compose.yml
+        ECR_URL: "{{ ecr_url }}"
+        IMAGE_TAG: "{{ image_tag }}"
         USER_NAME: "Vimaldeep Singh Wathan"
