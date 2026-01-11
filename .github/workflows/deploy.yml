@@ -51,12 +51,13 @@ jobs:
           ECR_REGISTRY="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
           REPO_NAME="devops-bootcamp/final-project-vimaldeep"
           
-          aws ssm send-command \
+        aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
             --parameters 'commands=[
+              "export HOME=/home/ubuntu",
               "cd /home/ubuntu",
-              "sudo chown ubuntu:ubuntu .",
+              "sudo rm -rf devops-bootcamp-project",
               "sudo -u ubuntu git clone https://github.com/Vimal1802/devops-bootcamp-project.git .",
               "cd devops-bootcamp-project/ansible",
               "ansible-playbook web-server.yml -i inventory.ini -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry=$ECR_REGISTRY\" -e \"ecr_url=$ECR_REGISTRY/$REPO_NAME\""
