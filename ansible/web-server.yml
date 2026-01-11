@@ -4,28 +4,63 @@
   become: true
 
   vars:
-    # Placeholders that get filled by the -e flags above
+    # These placeholders get filled by the -e flags from GitHub Actions
     ecr_url: ""
     ecr_registry: ""
     image_tag: ""
     app_path: "/home/ubuntu/ansible"
 
   tasks:
-    # 1. AUTHENTICATE
+    # ==========================================================
+    # 1. INSTALL SYSTEM DEPENDENCIES & AWS CLI
+    # ==========================================================
+    - name: Install Git, Unzip, and Python dependencies
+      ansible.builtin.apt:
+        name: [git, unzip, python3-pip, python3-docker] # Added python3-docker
+        state: present
+        update_cache: yes
+
+    - name: Install AWS CLI v2
+      ansible.builtin.command: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+        unzip -o /tmp/awscliv2.zip -d /tmp
+        /tmp/aws/install --update
+      args:
+        creates: "/usr/local/bin/aws"
+
+    # ==========================================================
+    # 2. INSTALL DOCKER & DOCKER COMPOSE
+    # ==========================================================
+    - name: Install Docker and Compose Plugin
+      ansible.builtin.apt:
+        name: [docker.io, docker-compose-v2]
+        state: present
+
+    - name: Ensure Docker is started and enabled
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    # ==========================================================
+    # 3. AUTHENTICATE TO ECR
+    # ==========================================================
     - name: Login to Amazon ECR
       ansible.builtin.shell: |
         aws ecr get-login-password --region ap-southeast-1 | \
         docker login --username AWS --password-stdin {{ ecr_registry }}
       changed_when: false
 
-    # 2. RUN APPLICATION
+    # ==========================================================
+    # 4. RUN APPLICATION
+    # ==========================================================
     - name: Start Container with Docker Compose
       community.docker.docker_compose_v2:
         project_src: "{{ app_path }}"
         state: present
         pull: always
       environment:
-        # This matches the ${} placeholders in your docker-compose.yml
+        # These map the Ansible vars to the docker-compose.yml placeholders
         ECR_URL: "{{ ecr_url }}"
         IMAGE_TAG: "{{ image_tag }}"
         USER_NAME: "Vimaldeep Singh Wathan"
