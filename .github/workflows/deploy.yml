@@ -57,13 +57,9 @@ jobs:
             --parameters 'commands=[
               "export HOME=/home/ubuntu",
               "cd /home/ubuntu",
-              # 1. Force remove any existing folder, no questions asked
               "sudo rm -rf devops-bootcamp-project",
-              # 2. Reset permissions of the current directory to be safe
               "sudo chown ubuntu:ubuntu .",
-              # 3. Clone as the ubuntu user so files have the right owner
               "sudo -u ubuntu git clone https://github.com/Vimal1802/devops-bootcamp-project.git",
-              # 4. Navigate and Run
               "cd devops-bootcamp-project/ansible",
               "ansible-playbook web-server.yml -i inventory.ini -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry=$ECR_REGISTRY\" -e \"ecr_url=$ECR_REGISTRY/$REPO_NAME\""
             ]'
