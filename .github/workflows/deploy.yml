@@ -61,6 +61,6 @@ jobs:
               "sudo chown ubuntu:ubuntu /home/ubuntu/ansible",
               "cd /home/ubuntu/ansible",
               "sudo -u ubuntu git clone https://github.com/Vimal1802/devops-bootcamp-project.git .",
-              "cd ansible"
+              "cd ansible",
               "sudo -u ubuntu ansible-playbook web-server.yml -i inventory.ini -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry=$ECR_REGISTRY\" -e \"ecr_url=$ECR_REGISTRY/$REPO_NAME\""
             ]'
