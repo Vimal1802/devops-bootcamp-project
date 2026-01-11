@@ -53,5 +53,5 @@ jobs:
             --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
             --parameters 'commands=[
               "cd /home/ubuntu/ansible",
-              "sudo -u ubuntu /home/ubuntu/.local/bin/ansible-playbook web-server.yml -i inventory.ini -e \"ecr_url=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPOSITORY }}\" -e \"image_tag=${{ github.sha }}\""
+              "sudo -u ubuntu /home/ubuntu/.local/bin/ansible-playbook web-server.yml -i inventory.ini -e \"image_tag=${{ github.sha }}\""
             ]'
