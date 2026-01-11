@@ -57,7 +57,7 @@ jobs:
             --parameters 'commands=[
               "cd /home/ubuntu",
               "sudo chown ubuntu:ubuntu .",
-              "sudo -u ubuntu git clone https://github.com/Vimal1802/devops-bootcamp-project.git",
+              "sudo -u ubuntu git clone https://github.com/Vimal1802/devops-bootcamp-project.git" .,
               "cd devops-bootcamp-project/ansible",
               "ansible-playbook web-server.yml -i inventory.ini -e \"image_tag=${{ github.sha }}\" -e \"ecr_registry=$ECR_REGISTRY\" -e \"ecr_url=$ECR_REGISTRY/$REPO_NAME\""
             ]'
