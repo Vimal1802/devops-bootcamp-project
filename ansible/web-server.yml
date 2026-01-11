@@ -1,73 +1,37 @@
 ---
-- name: Deploy DevOps Web App with ECR Integration
+- name: Application Deployment
   hosts: web_server
   become: true
 
   vars:
-    # These variables are passed via the -e flag in your SSM command
-    # ecr_url: "..."
-    # ecr_registry: "..."
-    # image_tag: "..."
-    app_path: "/var/www/my-devops-project"
-
-  roles:
-    - role: geerlingguy.docker
-      vars:
-        docker_install_compose: true
-        docker_users: ["ubuntu"]
+    # This matches the folder we just created on the Web Server
+    ecr_url: "927428187886.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp/final-project-vimaldeep"
+    ecr_registry: "927428187886.dkr.ecr.ap-southeast-1.amazonaws.com"
+    app_path: "/home/ubuntu/"
 
   tasks:
-    # ==========================================================
-    # 1. PREPARE SERVER ENVIRONMENT
-    # ==========================================================
-    - name: Ensure deployment directory exists
-      ansible.builtin.file:
-        path: "{{ app_path }}"
-        state: directory
-        owner: ubuntu
-        group: ubuntu
-        mode: '0755'
-
-    - name: Install AWS CLI dependencies (required for ECR login)
-      ansible.builtin.apt:
-        name: 
-          - python3-pip
-          - unzip
-        state: present
-        update_cache: yes
-
-    # ==========================================================
-    # 2. DEPLOY CONFIGURATION FROM CONTROLLER
-    # ==========================================================
-    - name: Copy docker-compose file from Controller to Server
-      ansible.builtin.copy:
-        # This assumes docker-compose.yml is in the same folder as this playbook
-        src: "./docker-compose.yml" 
-        dest: "{{ app_path }}/docker-compose.yml"
-        owner: ubuntu
-        group: ubuntu
-        mode: '0644'
-
-    - name: Login to Amazon ECR
+    - name: ECR Login
       ansible.builtin.shell: |
+        # This regex extracts the domain part even if a full path is passed
         aws ecr get-login-password --region ap-southeast-1 | \
         docker login --username AWS --password-stdin {{ ecr_registry }}
       changed_when: false
 
-    - name: Update image tag to the specific GitHub SHA
+    - name: Patch docker-compose (Update Image and Port)
       ansible.builtin.replace:
         path: "{{ app_path }}/docker-compose.yml"
-        regexp: 'image:.*'
-        replace: "image: {{ ecr_url }}:{{ image_tag }}"
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.replace }}"
+      loop:
+        - { regexp: 'image:.*', replace: "image: {{ ecr_url }}:latest" }
+        - { regexp: '["'']?8080:80["'']?', replace: "'80:80'" }
 
-    # ==========================================================
-    # 3. RUN APPLICATION
-    # ==========================================================
-    - name: Pull and Run Application with Docker Compose
-      community.docker.docker_compose_v2:
-        project_src: "{{ app_path }}"
-        state: present
-        pull: always
-        remove_orphans: yes
-      environment:
-        USER_NAME: "Vimaldeep Singh Wathan"
+    - name: Pull and Restart
+      ansible.builtin.shell: |
+        export ECR_URL="{{ ecr_url }}"
+        export IMAGE_TAG="{{ image_tag }}"
+        export USER_NAME="Vimaldeep Singh Wathan"
+        docker compose -f {{ app_path }}/docker-compose.yml pull
+        docker compose -f {{ app_path }}/docker-compose.yml up -d --force-recreate
+      args:
+        executable: /bin/bash
