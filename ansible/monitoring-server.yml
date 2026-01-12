@@ -1,14 +1,14 @@
 ---
 # PART 1: Web Server Monitoring
 - name: Install Node Exporter
-  hosts: Web_Server           # <--- Capitalized to match Tag
+  hosts: web_server           # <--- Capitalized to match Tag
   become: true
   roles:
     - prometheus.prometheus.node_exporter
 
 # PART 2: Setup Monitoring Hub
 - name: Setup Monitoring Hub
-  hosts: Monitoring_Server    # <--- Capitalized to match Tag
+  hosts: monitoring_server    # <--- Capitalized to match Tag
   become: true
   
   vars:
