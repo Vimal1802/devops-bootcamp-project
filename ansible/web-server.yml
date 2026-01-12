@@ -49,7 +49,7 @@
       ansible.builtin.shell: |
         export ECR_URL="{{ ecr_url }}"
         export IMAGE_TAG="{{ image_tag }}"
-        export USER_NAME="PLEASE WORK"
+        export USER_NAME="VIMALDEEP SINGH WATHAN"
         docker compose -f {{ app_path }}/docker-compose.yml pull
         docker compose -f {{ app_path }}/docker-compose.yml up -d --force-recreate
       args:
