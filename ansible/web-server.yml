@@ -4,8 +4,8 @@
 
   vars:
     # This matches the folder we just created on the Web Server
-    ecr_url: "927428187886.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp/final-project-vimaldeep"
-    ecr_registry: "927428187886.dkr.ecr.ap-southeast-1.amazonaws.com"
+    ecr_url: "update-ecr-url.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp/final-project-vimaldeep"
+    ecr_registry: "update-ecr-url.dkr.ecr.ap-southeast-1.amazonaws.com"
     app_path: "/home/ubuntu/"
 
   # 1. We use pre_tasks to ensure AWS CLI installs BEFORE the Docker role runs
