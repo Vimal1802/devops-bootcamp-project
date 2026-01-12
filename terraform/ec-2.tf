@@ -77,7 +77,7 @@ user_data = <<-EOF
     echo "Ansible Controller Setup Complete."
   EOF
 
-  tags = { Name = "Web Server Ansible Controller" }
+  tags = { Name = "Ansible Controller" }
   depends_on = [data.archive_file.ansible_pack]
 }
 
