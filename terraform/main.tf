@@ -6,26 +6,28 @@ terraform {
     }
   }
 }
-#Terraform will automatically pull the credentials you just entered in the CLI.
+
+# Standardizes authentication by leveraging the active AWS CLI session for secure access.
 provider "aws" {
   region  = "ap-southeast-1"
   profile = "default"
 }
 
-# Data source to get the current AWS account details
+# Queries the AWS ecosystem to retrieve verified identity metadata for the current session.
 data "aws_caller_identity" "current" {}
 
-# Outputs to display account id after running 'terraform apply'
+# Provides visibility into the target AWS Account ID for auditing and validation purposes.
 output "account_id" {
   value = data.aws_caller_identity.current.account_id
 }
 
-# Outputs to display current profile id after running 'terraform apply'
+# Exports the specific Identity and Access Management (IAM) ARN for session traceability.
 output "caller_arn" {
   value = data.aws_caller_identity.current.arn
 }
 
-# #UNCOMMENT THE BLOCK BELOW ONLY AFTER RUNNING 'terraform apply'
+# --- REMOTE STATE MANAGEMENT ---
+# Uncomment this block once the initial resources are provisioned and run 'terraform init -migrate-state' to transition the local state file.
 # terraform {
 #   backend "s3" {
 #     bucket = "devops-bootcamp-terraform-vimaldeep"
