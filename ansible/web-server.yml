@@ -1,14 +1,21 @@
-- name: Install AWS CLI and Docker
+- name: Install AWS CLI,Docker and Deploy App
   hosts: web_server
   become: true
 
-  vars:
-    # This matches the folder we just created on the Web Server
+vars:
+    # Target ECR repository for pulling the application image
     ecr_url: "update-ecr-url.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp/final-project-vimaldeep"
+    
+    # Base ECR registry URL for Docker authentication/login
     ecr_registry: "update-ecr-url.dkr.ecr.ap-southeast-1.amazonaws.com"
-    app_path: "/home/ubuntu/"
+    
+    # Local directory on the Web Server where the application will be deployed
+    app_path: "/home/ubuntu"
+    
+    # Remote source URL for fetching the latest docker-compose configuration
+    raw_compose_url: "https://raw.githubusercontent.com/Vimal1802/devops-bootcamp-project/main/lab-final-project/docker-compose.yml"
 
-  # 1. We use pre_tasks to ensure AWS CLI installs BEFORE the Docker role runs
+  # 1. Execute pre_tasks to provision the AWS CLI environment prior to Docker configuration
   pre_tasks:
     - name: Install AWS CLI v2 dependencies
       ansible.builtin.apt:
@@ -30,14 +37,14 @@
         executable: /bin/bash
       changed_when: false
 
-  # 2. Run the heavy Docker Role
+  # 2. Run installation for Docker using Ansible roles
   roles:
     - role: geerlingguy.docker
       vars:
         docker_install_compose: true
         docker_users: ["ubuntu"]
 
-  # 3. Add your deployment tasks here (ECR Login, Pull, Run)
+  # 3. Pull latest image from ECR and Deploy App (ECR Login, Pull, Run)
   tasks:
     - name: Login to Amazon ECR
       ansible.builtin.shell: |
@@ -47,10 +54,11 @@
 
     - name: Pull and Restart Application
       ansible.builtin.shell: |
-        export ECR_URL="{{ ecr_url }}"
-        export IMAGE_TAG="{{ image_tag }}"
-        export USER_NAME="VIMALDEEP SINGH WATHAN"
-        docker compose -f {{ app_path }}/docker-compose.yml pull
-        docker compose -f {{ app_path }}/docker-compose.yml up -d --force-recreate
+        docker compose pull
+        docker compose up -d --force-recreate
       args:
-        executable: /bin/bash
+        chdir: "{{ app_path }}" # This removes the need for -f path/docker-compose.yml
+      environment:
+        ECR_URL: "{{ ecr_url }}"
+        IMAGE_TAG: "{{ image_tag }}"
+        USER_NAME: "VIMALDEEP SINGH WATHAN"
