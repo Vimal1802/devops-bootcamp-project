@@ -25,11 +25,11 @@ output "caller_arn" {
   value = data.aws_caller_identity.current.arn
 }
 
-#UNCOMMENT THE BLOCK BELOW ONLY AFTER RUNNING 'terraform apply'
-terraform {
-  backend "s3" {
-    bucket = "devops-bootcamp-terraform-vimaldeep"
-    key    = "global/s3/terraform.tfstate"
-    region = "ap-southeast-1"
-  }
-}
+# #UNCOMMENT THE BLOCK BELOW ONLY AFTER RUNNING 'terraform apply'
+# terraform {
+#   backend "s3" {
+#     bucket = "devops-bootcamp-terraform-vimaldeep"
+#     key    = "global/s3/terraform.tfstate"
+#     region = "ap-southeast-1"
+#   }
+# }
