@@ -1,6 +1,7 @@
 services:
   final-project:
-    build: .
+    # Use the image from ECR instead of building locally
+    image: ${ECR_URL}:${IMAGE_TAG} 
     container_name: final-project
     ports:
       - "8080:80"
