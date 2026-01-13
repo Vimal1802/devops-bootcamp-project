@@ -1,10 +1,11 @@
-# 1. Web Server Security Group
+# 1. EXTERNAL-FACING SECURITY POLICY
+# Manages public access for the web application and facilitates secure cross-tier monitoring.
 resource "aws_security_group" "public_sg" {
   name        = "devops-public-sg"
   description = "Public Web and Internal Scraping"
   vpc_id      = aws_vpc.devops_vpc.id
 
-  # Public Access for the App
+  # Enables global HTTP access to the application layer.
   ingress {
     from_port   = 80
     to_port     = 80
@@ -12,6 +13,7 @@ resource "aws_security_group" "public_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Standard outbound configuration to allow resource updates and external API communication.
   egress {
     from_port   = 0
     to_port     = 0
@@ -22,27 +24,25 @@ resource "aws_security_group" "public_sg" {
   tags = { Name = "devops-public-sg" }
 }
 
+# Authorizes specific telemetry traffic from the Private Monitoring Tier to the Public Application Tier.
 resource "aws_security_group_rule" "allow_prometheus_scraping" {
   type                     = "ingress"
   from_port                = 9100
   to_port                  = 9100
   protocol                 = "tcp"
   description              = "Prometheus scraping from monitoring server"
-  
-  # Which group is RECEIVING the traffic?
   security_group_id        = aws_security_group.public_sg.id
-  
-  # Which group is SENDING the traffic?
   source_security_group_id = aws_security_group.private_sg.id
 }
 
-# 2. Ansible Controller & Monitoring Security Group
+# 2. INTERNAL MANAGEMENT & MONITORING SECURITY POLICY
+# Isolates administrative and monitoring services while maintaining required connectivity for management tools.
 resource "aws_security_group" "private_sg" {
   name        = "devops-private-sg"
   description = "Internal Management - No Inbound Ports Needed"
   vpc_id      = aws_vpc.devops_vpc.id
 
-  # Allow all internal traffic within this SG (Controller <-> Monitor)
+  # Permits unrestricted internal traffic between private management and monitoring resources.
   ingress {
     from_port   = 0
     to_port     = 0
@@ -50,7 +50,7 @@ resource "aws_security_group" "private_sg" {
     self        = true
   }
 
-  # Allow the Web Server SG to talk back if needed (e.g., push metrics)
+  # Facilitates secure inbound communication from the Public Tier for log and metric collection.
   ingress {
     from_port       = 0
     to_port         = 0
@@ -58,7 +58,7 @@ resource "aws_security_group" "private_sg" {
     security_groups = [aws_security_group.public_sg.id]
   }
 
-  # Outbound REQUIRED: For SSM, ECR, and Cloudflare Tunneling
+  # Authorizes essential outbound traffic for SSM management, ECR image retrieval, and Cloudflare tunneling.
   egress {
     from_port   = 0
     to_port     = 0
