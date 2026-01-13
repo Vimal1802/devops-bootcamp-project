@@ -1,9 +1,0 @@
-services:
-  final-project:
-    image: ${ECR_URL}:${IMAGE_TAG}
-    container_name: final-project
-    ports:
-      - "80:80"
-    environment:
-      - USER_NAME=${USER_NAME:-DevOps Engineer}
-    restart: unless-stopped
