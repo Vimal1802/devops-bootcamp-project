@@ -1,16 +1,21 @@
 ---
-# PART 1: Web Server Monitoring
+# 1. DISTRIBUTED METRIC COLLECTION (Edge)
+# Deploys the Node Exporter to the Web Server to capture hardware and OS-level metrics.
 - name: Install Node Exporter
-  hosts: web_server           # <--- Capitalized to match Tag
+  hosts: web_server
   become: true
   roles:
+    # Industry standard role for exporting Linux system metrics (CPU, RAM, Disk).
     - prometheus.prometheus.node_exporter
 
-# PART 2: Setup Monitoring Hub
+# 2. CENTRALIZED MONITORING HUB
+# Orchestrates the full observability stack (Prometheus, Grafana, and Docker) on the Monitoring host.
 - name: Setup Monitoring Hub
-  hosts: monitoring_server    # <--- Capitalized to match Tag
+  hosts: monitoring_server
   become: true
   
+  # 3. SERVICE CONFIGURATION VARIABLES
+  # Defines the administrative credentials and network routing for the visualization layer.
   vars:
     grafana_ini:
       security:
@@ -21,6 +26,8 @@
         root_url: "https://monitoring.vimalops.com"
         http_port: 3000
 
+    # 4. SCRAPE TARGET DEFINITIONS
+    # Instructs Prometheus on which endpoints to poll for metric data.
     custom_monitoring_targets:
       - job_name: 'prometheus'
         static_configs:
@@ -29,6 +36,8 @@
         static_configs:
           - targets: ['10.0.0.5:9100']
 
+  # 5. AUTOMATED COMPONENT DEPLOYMENT
+  # Leverages community roles to install the core engine and dashboard tools.
   roles:
     - geerlingguy.docker
     - role: prometheus.prometheus.prometheus
@@ -36,6 +45,8 @@
         prometheus_scrape_configs: "{{ custom_monitoring_targets }}"
     - grafana.grafana.grafana
 
+  # 6. SECURE EXTERNAL INGRESS (Cloudflare Tunnel)
+  # Deploys a Dockerized tunnel to expose the monitoring dashboard securely without opening VPC ports.
   tasks:
     - name: Run Cloudflare Tunnel Container
       community.docker.docker_container:
