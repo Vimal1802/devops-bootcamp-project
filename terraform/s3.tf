@@ -1,3 +1,4 @@
+# #1. S3 STATE REPOSITORY
 # Establishes a durable S3 repository to serve as the centralized "Source of Truth" for infrastructure state management.
 resource "aws_s3_bucket" "terraform_state" {
   bucket = "devops-bootcamp-terraform-vimaldeep"
@@ -8,6 +9,7 @@ resource "aws_s3_bucket" "terraform_state" {
   }
 }
 
+# #2. BUCKET VERSIONING
 # Activates state-level versioning to provide a robust audit trail and point-in-time recovery for infrastructure changes.
 resource "aws_s3_bucket_versioning" "enabled" {
   bucket = aws_s3_bucket.terraform_state.id
