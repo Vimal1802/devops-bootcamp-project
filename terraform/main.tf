@@ -1,3 +1,5 @@
+# #1. TERRAFORM & PROVIDER CONFIGURATION
+# Defines the required provider plugins and versions to ensure environment consistency.
 terraform {
   required_providers {
     aws = {
@@ -7,15 +9,18 @@ terraform {
   }
 }
 
+# #2. AWS PROVIDER AUTHENTICATION
 # Standardizes authentication by leveraging the active AWS CLI session for secure access.
 provider "aws" {
   region  = "ap-southeast-1"
   profile = "default"
 }
 
+# #3. CALLER IDENTITY DATA SOURCE
 # Queries the AWS ecosystem to retrieve verified identity metadata for the current session.
 data "aws_caller_identity" "current" {}
 
+# #4. INFRASTRUCTURE OUTPUTS
 # Provides visibility into the target AWS Account ID for auditing and validation purposes.
 output "account_id" {
   value = data.aws_caller_identity.current.account_id
@@ -26,7 +31,7 @@ output "caller_arn" {
   value = data.aws_caller_identity.current.arn
 }
 
-# --- REMOTE STATE MANAGEMENT ---
+# #5. REMOTE STATE MANAGEMENT
 # Uncomment this block once the initial resources are provisioned and run 'terraform init -migrate-state' to transition the local state file.
 # terraform {
 #   backend "s3" {
