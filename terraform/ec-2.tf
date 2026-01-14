@@ -96,15 +96,3 @@ resource "aws_instance" "monitoring_server" {
   tags = { Name = "Monitoring Server" }
 }
 
-# --- Outputs ---
-output "web_server_id" {
-  value = aws_instance.web_server.id
-}
-
-output "monitoring_server_id" {
-  value = aws_instance.monitoring_server.id
-}
-
-output "ansible_controller_id" {
-  value = aws_instance.ansible_controller.id
-}
