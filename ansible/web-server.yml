@@ -1,27 +1,22 @@
-- name: Install AWS CLI,Docker and Deploy App
+- name: Install AWS CLI, Docker and Deploy App
   hosts: web_server
   become: true
 
-vars:
-    # Target ECR repository for pulling the application image
+  vars:
+    # #1. ECR CONFIGURATION
+    # Ensure these match your ECR outputs from Terraform
     ecr_url: "update-ecr-url.dkr.ecr.ap-southeast-1.amazonaws.com/devops-bootcamp/final-project-vimaldeep"
-    
-    # Base ECR registry URL for Docker authentication/login
     ecr_registry: "update-ecr-url.dkr.ecr.ap-southeast-1.amazonaws.com"
     
-    # Local directory on the Web Server where the application will be deployed
+    # #2. DEPLOYMENT PATHS
     app_path: "/home/ubuntu"
-    
-    # Remote source URL for fetching the latest docker-compose configuration
     raw_compose_url: "https://raw.githubusercontent.com/Vimal1802/devops-bootcamp-project/main/app/docker-compose.yml"
 
-  # 1. Execute pre_tasks to provision the AWS CLI environment prior to Docker configuration
   pre_tasks:
+    # #3. SYSTEM DEPENDENCIES
     - name: Install AWS CLI v2 dependencies
       ansible.builtin.apt:
-        name:
-          - unzip
-          - curl
+        name: [unzip, curl]
         state: present
         update_cache: yes
 
@@ -37,27 +32,42 @@ vars:
         executable: /bin/bash
       changed_when: false
 
-  # 2. Run installation for Docker using Ansible roles
   roles:
+    # #4. DOCKER INSTALLATION
+    # Uses the geerlingguy role to install Docker Engine and Compose Plugin
     - role: geerlingguy.docker
       vars:
         docker_install_compose: true
         docker_users: ["ubuntu"]
 
-  # 3. Pull latest image from ECR and Deploy App (ECR Login, Pull, Run)
   tasks:
+    # #5. DOWNLOAD CONFIGURATION
+    # This downloads and stores the docker-compose.yml file in /home/ubuntu
+    - name: Download docker-compose.yml from Public GitHub
+      ansible.builtin.get_url:
+        url: "{{ raw_compose_url }}"
+        dest: "{{ app_path }}/docker-compose.yml"
+        owner: ubuntu
+        group: ubuntu
+        mode: '0644'
+        force: yes
+
+    # #6. REGISTRY LOGIN
     - name: Login to Amazon ECR
       ansible.builtin.shell: |
         aws ecr get-login-password --region ap-southeast-1 | \
         docker login --username AWS --password-stdin {{ ecr_registry }}
       changed_when: false
 
+    # #7. APPLICATION STARTUP
+    # chdir ensures we are in the directory where the .yml file exists
     - name: Pull and Restart Application
       ansible.builtin.shell: |
         docker compose pull
         docker compose up -d --force-recreate
       args:
-        chdir: "{{ app_path }}" # This removes the need for -f path/docker-compose.yml
+        chdir: "{{ app_path }}"
+        executable: /bin/bash
       environment:
         ECR_URL: "{{ ecr_url }}"
         IMAGE_TAG: "{{ image_tag }}"
