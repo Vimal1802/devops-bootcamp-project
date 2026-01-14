@@ -1,9 +1,18 @@
 ---
-# requirements.yml
+# 1. EXTERNAL ANSIBLE ROLES
+# Pulls community-verified roles to handle complex infrastructure configurations.
 roles:
+  # Automates the installation and configuration of the Docker engine across various OS distributions.
   - name: geerlingguy.docker
 
+# 2. ANSIBLE COLLECTIONS
+# Installs necessary plugins and modules for advanced service integration and cloud management.
 collections:
+  # Provides modules for managing Docker containers, images, and networks.
   - name: community.docker
+
+  # Standardizes the deployment of Prometheus and its associated monitoring exporters.
   - name: prometheus.prometheus
+
+  # Enables automated configuration and dashboard management for Grafana visualization.
   - name: grafana.grafana
