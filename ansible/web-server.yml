@@ -13,7 +13,7 @@ vars:
     app_path: "/home/ubuntu"
     
     # Remote source URL for fetching the latest docker-compose configuration
-    raw_compose_url: "https://raw.githubusercontent.com/Vimal1802/devops-bootcamp-project/main/lab-final-project/docker-compose.yml"
+    raw_compose_url: "https://raw.githubusercontent.com/Vimal1802/devops-bootcamp-project/main/app/docker-compose.yml"
 
   # 1. Execute pre_tasks to provision the AWS CLI environment prior to Docker configuration
   pre_tasks:
