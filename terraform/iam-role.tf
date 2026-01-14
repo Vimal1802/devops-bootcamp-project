@@ -48,17 +48,14 @@ resource "aws_iam_role_policy" "github_combined_policy" {
         Resource = "*" 
       },
       {
-        Sid      = "RestrictedSSM"
+        Sid      = "SSM Access"
         Effect   = "Allow"
-        Action   = ["ssm:SendCommand"]
+        Action   = ["ssm:SendCommand","ssm:GetCommandInvocation"]
         Resource = [
           "arn:aws:ec2:*:*:instance/*", 
-          "arn:aws:ssm:*:*:document/AWS-RunShellScript"
+          "arn:aws:ssm:*:*:document/AWS-RunShellScript",
+          "arn:aws:ssm:*:*:*"
         ]
-        # MATCHING YOUR TAGS: Exactly matches "Ansible Controller"
-        Condition = {
-          "StringEquals": { "aws:ResourceTag/Name": "Ansible Controller" }
-        }
       }
     ]
   })
