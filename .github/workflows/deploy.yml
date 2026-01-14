@@ -1,4 +1,4 @@
-name: OIDC Build and SSM Deploy
+name: Build and Deploy
 on:
   push:
     branches:
