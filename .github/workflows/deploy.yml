@@ -49,10 +49,21 @@ jobs:
 
       - name: Trigger Deployment via SSM
         run: |
-          aws ssm send-command \
+          # Sends the command to the Ansible Controller via Tag
+          COMMAND_ID=$(aws ssm send-command \
             --document-name "AWS-RunShellScript" \
-            --targets "Key=instanceids,Values=${{ secrets.INSTANCE_ID }}" \
+            --targets "Key=tag:Name,Values=Ansible Controller" \
             --parameters 'commands=[
               "cd /home/ubuntu/ansible",
               "sudo -u ubuntu /home/ubuntu/.local/bin/ansible-playbook web-server.yml -i inventory.ini -e \"image_tag=${{ github.sha }}\""
-            ]'
+            ]' \
+            --query "Command.CommandId" \
+            --output text)
+          
+          echo "Command sent! ID: $COMMAND_ID"
+          
+          # Forces GitHub to wait for Ansible to finish. 
+          # Note: Uses the specific Instance ID secret for the status check.
+          aws ssm wait command-executed \
+            --command-id "$COMMAND_ID" \
+            --instance-id "${{ secrets.INSTANCE_ID }}"
