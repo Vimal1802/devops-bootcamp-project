@@ -20,18 +20,7 @@ provider "aws" {
 # Queries the AWS ecosystem to retrieve verified identity metadata for the current session.
 data "aws_caller_identity" "current" {}
 
-# #4. INFRASTRUCTURE OUTPUTS
-# Provides visibility into the target AWS Account ID for auditing and validation purposes.
-output "account_id" {
-  value = data.aws_caller_identity.current.account_id
-}
-
-# Exports the specific Identity and Access Management (IAM) ARN for session traceability.
-output "caller_arn" {
-  value = data.aws_caller_identity.current.arn
-}
-
-# #5. REMOTE STATE MANAGEMENT
+# #4. REMOTE STATE MANAGEMENT
 # Uncomment this block once the initial resources are provisioned and run 'terraform init -migrate-state' to transition the local state file.
 # terraform {
 #   backend "s3" {
