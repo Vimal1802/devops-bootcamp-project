@@ -7,9 +7,3 @@ resource "aws_ecr_repository" "basic_repo" {
   # Terraform to delete the repository even if it contains stored images.
   force_delete = true
 }
-
-# 2. REPOSITORY ENDPOINT EXPORT
-# Provides the unique URI required by the GitHub Actions pipeline to authenticate and push Docker images.
-output "repo_url" {
-  value = aws_ecr_repository.basic_repo.repository_url
-}
