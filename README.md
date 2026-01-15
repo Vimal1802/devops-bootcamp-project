@@ -22,9 +22,16 @@ cd devops-bootcamp-project
 ## 2. Deploy Infrastructure with Terraform
 ```bash
 cd terraform
+```
+```bash
 terraform init
+```
+```bash
 terraform plan
+```
+```bash
 terraform apply
+```
 
 ## 3. Access the Ansible Controller
 AWS Console → EC2 → Ansible Controller → Connect → SSM Session Manager
