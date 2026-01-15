@@ -79,7 +79,7 @@ ansible-playbook requirements.yml
 ## 🚀 5. Run the CI/CD Pipeline in GitHub Actions to deploy the  Web Server
 
 ### Initiate the Deployment
-Trigger the automated CI/CD pipeline to build your Docker image and deploy it to AWS EC2 via SSM ( `web-server.yml` playbook):
+Trigger the automated CI/CD pipeline to build your Docker image and deploy it to AWS EC2 via SSM ( `web-server.yml` ansible playbook):
 
 - Navigate to your **GitHub Repository** and click on the **Actions** tab.
 
