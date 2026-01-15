@@ -15,8 +15,7 @@ This project provisions cloud infrastructure using Terraform, configures servers
 
 ## 1. Clone the Repository
 ```bash
-git clone https://github.com/Vimal1802/devops-bootcamp-project.git
-cd devops-bootcamp-project
+git clone https://github.com/Vimal1802/devops-bootcamp-project.git && cd devops-bootcamp-project
 ```
 
 ## 2. Deploy Infrastructure with Terraform
