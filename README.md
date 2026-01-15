@@ -13,12 +13,12 @@ This project provisions cloud infrastructure using Terraform, configures servers
 
 # 🚀 Deployment Steps
 
-## 1. Clone the Repository
+## 📥 1. Clone the Repository
 ```bash
 git clone https://github.com/Vimal1802/devops-bootcamp-project.git && cd devops-bootcamp-project
 ```
 
-## 2. Deploy Infrastructure with Terraform
+## 🏗️ 2. Deploy Infrastructure with Terraform
 ```bash
 cd terraform
 ```
@@ -35,77 +35,89 @@ terraform apply
 terraform init -migrate-state
 ```
 
-## 3. Access the Ansible Controller
+## 🖥️ 3. Access the Ansible Controller
 AWS Console → EC2 → Ansible Controller → Connect → SSM Session Manager
 
-## 4. Configure Ansible
-Change to the Ansible directory:
+## ⚙️ 4. Configure Ansible Environment
+Switch to the `ubuntu` user and navigate to the Ansible working directory. 
+
 ```bash
 sudo su - ubuntu -c "cd ansible && bash"
 ```
 
-If the Ansible folders are not present yet, the deployment may still be running.  
-Check the deployment log in /home/ubuntu to confirm that it has completed (it can take about a minute):
-```bash
-cat deploy.log
-```
+> **Note:** If the directory is missing, the initial setup through `user data` is likely still in progress. It may take a few minutes to install dependencies and move the Ansible configuration. Monitor progress with: `cat /home/ubuntu/deploy.log`
+
 
 ### Update the Ansible Inventory
-(Add Web Server and Monitoring Server instance IDs)
 ```bash
 nano inventory.ini
 ```
+
+- **Instructions**: After opening the file , navigate using your arrow keys and replace the placeholders with your actual **Web Server** and **Monitoring Server** Instance IDs.
+- **To Save**: Press `Ctrl + O` then `Enter`.
+- **To Exit**: Press `Ctrl + X`.
+
+### Update the Ansible Playbook
+```bash
+nano web-server.yml
+```
+- **Instructions**: After opening the file , navigate using your arrow keys and replace the placeholders with your **ECR repository URL**
+- **To Save**: Press `Ctrl + O` then `Enter`.
+- **To Exit**: Press `Ctrl + X`.
+
 
 ### Test Connectivity
 ```bash
 ansible all -m ping
 ```
 
-## 5. Install Required Packages
+## 📦 5. Install Dependencies
 ```bash
 ansible-playbook requirements.yml
 ```
 
-## 6. Update the Web Server Playbook
-(Update with your ECR repository URL)
-```bash
-nano web-server.yml
-```
+## 🚀 7. Run the CI/CD Pipeline in GitHub Actions to deploy the  Web Server
 
-## 7. Run the CI/CD Pipeline in GitHub Actions
-GitHub → Actions → Build and Deploy → Run Workflow
+### Initiate the Deployment
+Trigger the automated CI/CD pipeline to build your Docker image and deploy it to AWS EC2 via SSM ( `web-server.yml` playbook):
+
+- Navigate to your **GitHub Repository** and click on the **Actions** tab.
+
+- In the left sidebar, select the **Build and Deploy** workflow.
+
+- Click the **Run workflow** dropdown menu on the right.
+
+- Ensure the **Main** branch is selected and click the green **Run workflow** button.
 
 ### Verify the Deployment
-Actions → Latest Run → deploy → Trigger Deployment via SSM  
-Confirm:
-- web_server shows **ok**
-- No failures appear
+Once the workflow finishes, verify the results in the logs:
 
-## 8. DNS and TLS Management (Cloudflare)
+- Navigate to **Actions** → Click on the **Latest Run.**
+
+- Select the **deploy** job from the sidebar.
+
+- Expand the **Trigger Deployment via SSM** step to view the Ansible output.
+
+- Confirm the following:
+
+  - Status: The `web_server` should show **ok** or **changed.**
+
+  - Failures: Ensure the `failed` count is `0`.
+
+> **Note**: The CI/CD pipeline consists of two distinct stages: **Build** (packaging the application into a Docker image and pushing it to ECR) and **Deploy** (triggering Ansible via SSM). You can monitor the real-time progress and logs for both stages directly on the **Actions** page.
+
+## 🌐 8. DNS and TLS Management (Cloudflare)
 To make your application accessible via your domain, follow these steps:
 
-**a. Configure DNS Records
-**
-1. Browse to your Cloudflare Homepage and select your domain.
+### a. DNS Configuration
+- Log in to your **Cloudflare Dashboard** and select your domain.
+- Navigate to **DNS > Records** and click **Add Record**.
+- Create an **A Record**:
+   - **Name**: `web` (creates `web.yourdomain.com`)
+   - **IPv4 address**: Your **Web Server Public IP**.
+   - **Proxy status**: **Proxied** (Orange cloud enabled).
 
-2. Navigate to DNS > Records.
-
-3. Click Add Record:
-
-*Type: A
-
-*Name: web (This results in web.vimalops.com)
-
-*IPv4 address: Paste your Web Server Public IP Address.
-
-*Proxy status: Proxied (Orange cloud).
-
-4. Click Save.
-
-**b. Configure SSL/TLS
-**
-1. Navigate to SSL/TLS > Overview.
-
-2. Click Configure.
-
-3. Select Flexible mode. (This ensures encryption between the browser and Cloudflare while your origin server handles traffic on port 80).
+### b. SSL/TLS Encryption
+- Navigate to **SSL/TLS > Overview**.
+- Click **Configure** and set the encryption mode to **Flexible**.
+   *(This secures the connection between the user and Cloudflare while the origin server uses port 80).*
