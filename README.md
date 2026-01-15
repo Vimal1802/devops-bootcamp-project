@@ -16,9 +16,10 @@ This project provisions cloud infrastructure using Terraform, configures servers
 ## 1. Clone the Repository
 ```bash
 git clone https://github.com/Vimal1802/devops-bootcamp-project.git
-cd devops-bootcamp-project```
+cd devops-bootcamp-project
 
 ## 2. Deploy Infrastructure with Terraform
+```bash
 cd terraform
 terraform init
 terraform plan
@@ -29,23 +30,29 @@ AWS Console → EC2 → Ansible Controller → Connect → SSM Session Manager
 
 ## 4. Configure Ansible
 Change to the Ansible directory:
+```bash
 sudo su - ubuntu -c "cd ansible && bash"
 
 If the Ansible folders are not present yet, the deployment may still be running.  
 Check the deployment log in /home/ubuntu to confirm that it has completed (it can take about a minute):
+```bash
 cat deploy.log
 
 ### Update the Ansible Inventory
+```bash
 nano inventory.ini  
 (Add Web Server and Monitoring Server instance IDs)
 
 ### Test Connectivity
+```bash
 ansible all -m ping
 
 ## 5. Install Required Packages
+```bash
 ansible-playbook requirements.yml
 
 ## 6. Update the Web Server Playbook
+```bash
 nano web-server.yml  
 (Update with your ECR repository URL)
 
