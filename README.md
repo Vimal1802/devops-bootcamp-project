@@ -86,15 +86,24 @@ To make your application accessible via your domain, follow these steps:
 
 a. Configure DNS Records
 Browse to your Cloudflare Homepage and select your domain.
+
 Navigate to DNS > Records.
+
 Click Add Record:
+
 Type: A
+
 Name: web (This results in web.vimalops.com)
+
 IPv4 address: Paste your Web Server Public IP Address.
+
 Proxy status: Proxied (Orange cloud).
+
 Click Save.
 
 b. Configure SSL/TLS
 Navigate to SSL/TLS > Overview.
+
 Click Configure.
+
 Select Flexible mode. (This ensures encryption between the browser and Cloudflare while your origin server handles traffic on port 80).
