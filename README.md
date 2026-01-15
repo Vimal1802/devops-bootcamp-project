@@ -84,27 +84,28 @@ Confirm:
 ## 8. DNS and TLS Management (Cloudflare)
 To make your application accessible via your domain, follow these steps:
 
-a. Configure DNS Records
+**a. Configure DNS Records
+**
+1. Browse to your Cloudflare Homepage and select your domain.
 
-Browse to your Cloudflare Homepage and select your domain.
+2. Navigate to DNS > Records.
 
-Navigate to DNS > Records.
+3. Click Add Record:
 
-Click Add Record:
+*Type: A
 
-Type: A
+*Name: web (This results in web.vimalops.com)
 
-Name: web (This results in web.vimalops.com)
+*IPv4 address: Paste your Web Server Public IP Address.
 
-IPv4 address: Paste your Web Server Public IP Address.
+*Proxy status: Proxied (Orange cloud).
 
-Proxy status: Proxied (Orange cloud).
+4. Click Save.
 
-Click Save.
+**b. Configure SSL/TLS
+**
+1. Navigate to SSL/TLS > Overview.
 
-b. Configure SSL/TLS
-Navigate to SSL/TLS > Overview.
+2. Click Configure.
 
-Click Configure.
-
-Select Flexible mode. (This ensures encryption between the browser and Cloudflare while your origin server handles traffic on port 80).
+3. Select Flexible mode. (This ensures encryption between the browser and Cloudflare while your origin server handles traffic on port 80).
