@@ -71,12 +71,12 @@ nano web-server.yml
 ansible all -m ping
 ```
 
-## 📦 5. Install Dependencies
+## Install Dependencies
 ```bash
 ansible-playbook requirements.yml
 ```
 
-## 🚀 7. Run the CI/CD Pipeline in GitHub Actions to deploy the  Web Server
+## 🚀 5. Run the CI/CD Pipeline in GitHub Actions to deploy the  Web Server
 
 ### Initiate the Deployment
 Trigger the automated CI/CD pipeline to build your Docker image and deploy it to AWS EC2 via SSM ( `web-server.yml` playbook):
@@ -106,7 +106,7 @@ Once the workflow finishes, verify the results in the logs:
 
 > **Note**: The CI/CD pipeline consists of two distinct stages: **Build** (packaging the application into a Docker image and pushing it to ECR) and **Deploy** (triggering Ansible via SSM). You can monitor the real-time progress and logs for both stages directly on the **Actions** page.
 
-## 🌐 8. DNS and TLS Management (Cloudflare)
+## 🌐 6. DNS and TLS Management (Cloudflare)
 To make your application accessible via your domain, follow these steps:
 
 ### a. DNS Configuration
