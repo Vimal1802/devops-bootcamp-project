@@ -85,6 +85,7 @@ Confirm:
 To make your application accessible via your domain, follow these steps:
 
 a. Configure DNS Records
+
 Browse to your Cloudflare Homepage and select your domain.
 
 Navigate to DNS > Records.
