@@ -31,6 +31,9 @@ terraform plan
 ```bash
 terraform apply
 ```
+```bash
+terraform init -migrate-state
+```
 
 ## 3. Access the Ansible Controller
 AWS Console → EC2 → Ansible Controller → Connect → SSM Session Manager
