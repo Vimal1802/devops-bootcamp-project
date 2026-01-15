@@ -40,29 +40,35 @@ AWS Console → EC2 → Ansible Controller → Connect → SSM Session Manager
 Change to the Ansible directory:
 ```bash
 sudo su - ubuntu -c "cd ansible && bash"
+```
 
 If the Ansible folders are not present yet, the deployment may still be running.  
 Check the deployment log in /home/ubuntu to confirm that it has completed (it can take about a minute):
 ```bash
 cat deploy.log
+```
 
 ### Update the Ansible Inventory
-```bash
-nano inventory.ini  
 (Add Web Server and Monitoring Server instance IDs)
+```bash
+nano inventory.ini
+```
 
 ### Test Connectivity
 ```bash
 ansible all -m ping
+```
 
 ## 5. Install Required Packages
 ```bash
 ansible-playbook requirements.yml
+```
 
 ## 6. Update the Web Server Playbook
-```bash
-nano web-server.yml  
 (Update with your ECR repository URL)
+```bash
+nano web-server.yml
+```
 
 ## 7. Run the CI/CD Pipeline in GitHub Actions
 GitHub → Actions → Build and Deploy → Run Workflow
