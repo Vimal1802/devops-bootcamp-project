@@ -3,10 +3,10 @@ Automated Infrastructure Deployment using Terraform, AWS, Ansible, and GitHub Ac
 
 ## 📌 Overview
 This project provisions cloud infrastructure using Terraform, configures servers using Ansible, and deploys applications through a GitHub Actions CI/CD pipeline. Follow the steps below to deploy and manage the environment end‑to‑end.
+
 ## Architecture Diagram
 
-<img width="938" height="785" alt="Screenshot 2026-01-16 230922" src="https://github.com/user-attachments/assets/d03ffa8e-1102-4e5a-9676-efdb5397b671" />
-
+<img width="938" height="785" alt="Screenshot 2026-01-16 230922" src="https://github.com/user-attachments/assets/57efecf2-f980-4367-9de7-ce217dda8eb2" />
 
 ## 🧰 Prerequisites
 - Terraform installed locally
@@ -104,7 +104,7 @@ terraform plan
 
 This command actually builds everything in your AWS account:
 ```bash
-terraform apply
+terraform apply --auto-approve
 ```
 **Enable Remote State (after deployment completes)**
 
@@ -118,7 +118,7 @@ Once the infrastructure has successfully deployed:
 
 Then run the following command to update the state:
 ```bash
-terraform init -migrate-state
+terraform init -migrate-state --auto-approve
 ```
 
 **Reminder:** : *Revisit Section 1.2 and complete it before progressing to the next section.*
@@ -129,7 +129,7 @@ terraform init -migrate-state
  - In the instance list, locate and select **Ansible Controller**
  - Click **Connect** at the top right
  - Choose **Session Manager**
- - Click **Start session**
+ - Click **Connect**
 
 ## ⚙️ 4. Configure Ansible Environment
 
@@ -152,7 +152,8 @@ This step is done after switching to the `ubuntu` user and navigating into the a
 nano inventory.ini
 ```
 
-- **Instructions**: After opening the file , navigate using your arrow keys and replace the placeholders with your actual **Web Server** and **Monitoring Server** Instance IDs.
+- **Instructions**: After opening the file , navigate using your arrow keys and replace the ansible_host section with your actual **Web Server** , **Monitoring Server** Instance IDs and also bucket name with your **S3 Bucket Name**
+
 - **To Save**: Press `Ctrl + O` then `Enter`.
 - **To Exit**: Press `Ctrl + X`.
 
@@ -172,7 +173,7 @@ ansible all -m ping
 
 ### ⚙️4.5 Install Dependencies
 ```bash
-ansible-playbook requirements.yml
+ansible-galaxy install -r requirements.yml
 ```
 
 ## 🚀 5. Run the CI/CD Pipeline in GitHub Actions to deploy the  Web Server
@@ -210,7 +211,7 @@ Once the workflow finishes, verify the results in the logs:
 ## 🌐 6. DNS and TLS Management (Cloudflare)
 To make your application accessible via your domain, follow these steps:
 
-### 6.1. DNS Configuration
+### 🌐 6.1. DNS Configuration
 - Log in to your **Cloudflare Dashboard** and select your domain.
 - Navigate to **DNS > Records** and click **Add Record**.
 - Create an **A Record**:
@@ -218,10 +219,17 @@ To make your application accessible via your domain, follow these steps:
    - **IPv4 address**: Your **Web Server Public IP**.
    - **Proxy status**: **Proxied** (Orange cloud enabled).
 
-### 6.2. SSL/TLS Encryption
+### 🌐 6.2. SSL/TLS Encryption
 - Navigate to **SSL/TLS > Overview**.
 - Click **Configure** and set the encryption mode to **Flexible**.
    *(This secures the connection between the user and Cloudflare while the origin server uses port 80).*
+- Click **Save**
+
+### 🌐 6.2 Verification and Connectivity Testing
+
+```bash
+https://web.your-domain.com/
+```
 
 ## 📡 7.0 Deploy the Monitoring Server With a Private Cloudflare Tunnel
 
@@ -326,12 +334,12 @@ Grafana will ask you to change the password — update it for security.
 
 Grafana needs to know where Prometheus is running so it can query your Node Exporter metrics.
 
- - In Grafana’s left sidebar, click **Settings** → **Data Sources**
+ - In Grafana’s left sidebar, click **Connections** → **Data Sources**
  - Click **Add data source**
  - Select **Prometheus**
  - Under HTTP URL, enter: `http://localhost:9090`
  - Scroll down and click **Save & Test**
- - You should see: `Data source is working`
+ - You should see: `Successfully queried the Prometheus API.`
 
 **Confirm That Node Exporter Metrics Are Being Collected**
 
@@ -347,19 +355,21 @@ You can confirm Node Exporter is working by querying Prometheus through Grafana.
 
 **Import the Node Exporter Dashboards**
 
- - In Grafana, click + (Create) → Import
- - In the “Import Via Grafana.com” field, enter dashboard ID: `1860`
+ - In Grafana on the top right , click + (Create) → Import Dashboard
+ - In the `Find and Import Dashboard` field, enter dashboard ID: `1860`
  - Click **Load**
- - Select your Prometheus data source
+ - Name : `Web Server Monitoring`
  - Click **Import**
 
 **Verify That Prometheus Is Scraping the Web Server**
 
- - In Grafana, open a new tab and go to your Prometheus UI : `http://localhost:9090`
- - In the top navigation bar, click **Status**
- - Click **Targets**
- - Look for the following Prometheus job: `web_server_node`
- - Confirm that its status shows: `UP`
+ - Click the **Explore** icon in the left sidebar.
+ - Ensure the data source is set to **Prometheus**.
+ - In the query box, type: **up** and click **Run Query**.
+ - Look at the results:
+   - You should see an entry for job=`web_server_node`.
+   - If the value is `1`, the server is `UP` and scraping correctly.
+   - If the value is `0`, Prometheus can see the server, but the Node Exporter is down.
 
 
 ### 📡 7.4 Create CPU, Memory, and Disk Usage Visualizations in the Node Exporter Dashboard
@@ -369,14 +379,13 @@ After importing the Node Exporter dashboard (`ID: 1860`), you can customize the 
 **Open the Node Exporter Dashboard**
 
  - In Grafana’s left sidebar, click Dashboards
- - Open **Node Exporter Full (ID: 1860)**
+ - Open **Web Server Monitoring**
 
 **Enter Edit Mode**
 
- - Click the Dashboard Settings menu (⋮) in the top-right corner
- - Select **Edit**
+ - Click the **Edit** In the top-right toolbar
  - Drag CPU, Memory, and Disk panels to the **top rows**
  - Resize them as needed
- - Save the dashboard layout
+ - Click **Save Dashboard**
 
 This keeps the existing panels but makes the important ones easier to find.
