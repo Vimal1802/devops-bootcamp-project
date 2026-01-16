@@ -48,7 +48,7 @@ resource "aws_iam_role_policy" "github_combined_policy" {
         Resource = "*" 
       },
       {
-        Sid      = "SSM Access"
+        Sid      = "SSMAccess"
         Effect   = "Allow"
         Action   = ["ssm:SendCommand","ssm:GetCommandInvocation"]
         Resource = [
