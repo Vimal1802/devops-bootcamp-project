@@ -1,3 +1,8 @@
+
+# Project Title
+
+A brief description of what this project does and who it's for
+
 # DevOps Bootcamp Project  
 Automated Infrastructure Deployment using Terraform, AWS, Ansible, and GitHub Actions
 
@@ -18,19 +23,100 @@ This project provisions cloud infrastructure using Terraform, configures servers
 git clone https://github.com/Vimal1802/devops-bootcamp-project.git && cd devops-bootcamp-project
 ```
 
+### 1.1 Push the Repository to Your Own GitHub Account
+
+Because **GitHub Actions** workflows run exclusively on GitHub and not on local machines, you must push the cloned project to your own GitHub repository before the workflow can execute.
+
+```bash
+ git remote remove origin
+ ```
+ ```bash
+ git remote add origin https://github.com/<your-username>/<your-repo>.git
+ ```
+ ```bash
+ git push -u origin main
+ ```
+
+### 1.2 Add Required GitHub Secrets (Required for CI/CD)
+
+After instrastructure deployment and before running the pipeline, configure these secrets in:
+
+- Go to **GitHub.com**
+ - Open Your Repository
+ - Click **Settings**
+ - Select **Secrets and Variables**
+ - Click **Actions**
+ - Add the required secrets:
+   - AWS_ACCOUNT_ID (Your 12‑digit AWS account number)
+   - AWS_REGION (Region used for deployments (e.g., ap-southeast-1))
+   - INSTANCE_ID (Ansible Controller Instance ID)
+
+> **Reminder:** *This section is to be completed only upon the completion of Section 2.0.*
+
 ## 🏗️ 2. Deploy Infrastructure with Terraform
+
+### 🔑 2.1 Configure AWS Credentials (Required Before Using Terraform)
+
+🔧 Where to get the AWS credentials
+
+ - Log in to the AWS Console
+ - Go to **IAM**
+ - Click **Users**
+ - Select your **IAM user**
+ - Open the **Security Credentials** tab
+ - Scroll down to **Access Keys**
+ - Create or copy your **Access Key ID** and **Secret Access Key**
+
+Once you have your **Access Key ID** and **Secret Access Key**, proceed to the next section to configure AWS on your machine so you can run Terraform commands for the deployment.
+
+ **Run this command in your local terminal:**
+```bash
+aws configure
+```
+
+You will be prompted to enter the following:
+
+ - AWS Access Key ID : `This is the public part of your AWS access credentials.`
+ - AWS Secret Access Key : `This is the private part — keep it secure and never share it.`
+ - Default region name (Example): `ap-southeast-1`
+ - Default output format : `You can simply press Enter to skip this (usually defaults to JSON).`
+
+**Go into the Terraform folder**
+
+You need to run all Terraform commands from inside the terraform directory:
 ```bash
 cd terraform
 ```
+**Set up Terraform for the first time**
+
+This command downloads the required Terraform plugins:
 ```bash
 terraform init
 ```
+**Check what Terraform will create**
+
+This shows you a preview of the resources Terraform will build.
+Nothing is created yet — it's only a dry run:
 ```bash
 terraform plan
 ```
+**Deploy your infrastructure**
+
+This command actually builds everything in your AWS account:
 ```bash
 terraform apply
 ```
+**Enable Remote State (after deployment completes)**
+
+Once the infrastructure has successfully deployed:
+
+ - Open the `main.tf` file in the Terraform folder.
+ - Find the section labeled `REMOTE STATE MANAGEMENT`
+ - Uncomment that section (remove the # symbols).
+
+ - Save the file.
+
+Then run the following command to update the state:
 ```bash
 terraform init -migrate-state
 ```
@@ -80,6 +166,8 @@ ansible-playbook requirements.yml
 
 ### Initiate the Deployment
 Trigger the automated CI/CD pipeline to build your Docker image and deploy it to AWS EC2 via SSM ( `web-server.yml` ansible playbook):
+
+
 
 - Navigate to your **GitHub Repository** and click on the **Actions** tab.
 
