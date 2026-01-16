@@ -319,8 +319,7 @@ Grafana needs to know where Prometheus is running so it can query your Node Expo
  - In Grafana’s left sidebar, click **Settings** → **Data Sources**
  - Click **Add data source**
  - Select **Prometheus**
- - Under HTTP URL, enter:
-   - `http://localhost:9090`
+ - Under HTTP URL, enter: `http://localhost:9090`
  - Scroll down and click **Save & Test**
  - You should see: `Data source is working`
 
