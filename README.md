@@ -48,9 +48,9 @@ After instrastructure deployment and before running the pipeline, configure thes
 
 > **Reminder:** *This section is to be completed only upon the completion of Section 2.0.*
 
-## 🏗️ 2. Deploy Infrastructure with Terraform
+## 🛠️ 2. Deploy Infrastructure with Terraform
 
-### 🏗️ 2.1 Configure AWS Credentials (Required Before Using Terraform)
+### 🛠️ 2.1 Configure AWS Credentials (Required Before Using Terraform)
 
 Where to get the AWS credentials
 
@@ -76,7 +76,7 @@ You will be prompted to enter the following:
  - Default region name (Example): `ap-southeast-1`
  - Default output format : `You can simply press Enter to skip this (usually defaults to JSON).`
 
-### 🏗️ 2.2 Deploy Infrastructure with Terraform
+### 🛠️ 2.2 Deploy Infrastructure with Terraform
 
 **Go into the Terraform folder**
 
@@ -127,9 +127,9 @@ terraform init -migrate-state
  - Choose **Session Manager**
  - Click **Start session**
 
-## ⚙️ 4. Configure Ansible Environment
+## 🤖 4. Configure Ansible Environment
 
-### ⚙️4.1 Switch to Ubuntu and Open the Ansible Folder
+### 🤖4.1 Switch to Ubuntu and Open the Ansible Folder
 
 To access the Ansible working directory, switch to the `ubuntu` user and navigate into the `ansible` folder:
 
@@ -140,7 +140,7 @@ sudo su - ubuntu -c "cd ansible && bash"
 > **Note:** *If the directory is missing, the initial setup through `user data` is likely still in progress. It may take a few minutes to install dependencies and move the Ansible configuration. Monitor progress with: `cat /home/ubuntu/deploy.log`*
 
 
-### ⚙️4.2 Update the Ansible Inventory
+### 🤖4.2 Update the Ansible Inventory
 
 This step is done after switching to the `ubuntu` user and navigating into the ansible directory using `cd ansible`
 
@@ -152,7 +152,7 @@ nano inventory.ini
 - **To Save**: Press `Ctrl + O` then `Enter`.
 - **To Exit**: Press `Ctrl + X`.
 
-### ⚙️4.3 Update the Ansible Playbook
+### 🤖4.3 Update the Ansible Playbook
 ```bash
 nano web-server.yml
 ```
@@ -161,19 +161,19 @@ nano web-server.yml
 - **To Exit**: Press `Ctrl + X`.
 
 
-### ⚙️4.4 Test Connectivity
+### 🤖4.4 Test Connectivity
 ```bash
 ansible all -m ping
 ```
 
-### ⚙️4.5 Install Dependencies
+### 🤖4.5 Install Dependencies
 ```bash
 ansible-playbook requirements.yml
 ```
 
 ## 🚀 5. Run the CI/CD Pipeline in GitHub Actions to deploy the  Web Server
 
-### Initiate the Deployment
+### 🚀 5.1 Initiate the Deployment
 Trigger the automated CI/CD pipeline to build your Docker image and deploy it to AWS EC2 via SSM ( `web-server.yml` ansible playbook):
 
 
@@ -186,7 +186,7 @@ Trigger the automated CI/CD pipeline to build your Docker image and deploy it to
 
 - Ensure the **Main** branch is selected and click the green **Run workflow** button.
 
-### Verify the Deployment
+### 🚀 5.2 Verify the Deployment
 Once the workflow finishes, verify the results in the logs:
 
 - Navigate to **Actions** → Click on the **Latest Run.**
