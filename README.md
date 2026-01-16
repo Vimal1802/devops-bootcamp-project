@@ -11,7 +11,7 @@ This project provisions cloud infrastructure using Terraform, configures servers
 - SSM Session Manager access to connect to the Ansible controller
 - Basic knowledge of Ansible and EC2
 
-## 🚀 Deployment Steps
+# 🚀 Deployment Steps
 
 ## 📥 1. Clone the Repository
 ```bash
@@ -48,9 +48,9 @@ After instrastructure deployment and before running the pipeline, configure thes
 
 > **Reminder:** *This section is to be completed only upon the completion of Section 2.0.*
 
-## 🛠️ 2. Deploy Infrastructure with Terraform
+## 🏗️ 2. Deploy Infrastructure with Terraform
 
-### 🛠️ 2.1 Configure AWS Credentials (Required Before Using Terraform)
+### 🏗️ 2.1 Configure AWS Credentials (Required Before Using Terraform)
 
 Where to get the AWS credentials
 
@@ -76,7 +76,7 @@ You will be prompted to enter the following:
  - Default region name (Example): `ap-southeast-1`
  - Default output format : `You can simply press Enter to skip this (usually defaults to JSON).`
 
-### 🛠️ 2.2 Deploy Infrastructure with Terraform
+### 🏗️ 2.2 Deploy Infrastructure with Terraform
 
 **Go into the Terraform folder**
 
@@ -127,9 +127,9 @@ terraform init -migrate-state
  - Choose **Session Manager**
  - Click **Start session**
 
-## 🤖 4. Configure Ansible Environment
+## ⚙️ 4. Configure Ansible Environment
 
-### 🤖4.1 Switch to Ubuntu and Open the Ansible Folder
+### ⚙️4.1 Switch to Ubuntu and Open the Ansible Folder
 
 To access the Ansible working directory, switch to the `ubuntu` user and navigate into the `ansible` folder:
 
@@ -140,7 +140,7 @@ sudo su - ubuntu -c "cd ansible && bash"
 > **Note:** *If the directory is missing, the initial setup through `user data` is likely still in progress. It may take a few minutes to install dependencies and move the Ansible configuration. Monitor progress with: `cat /home/ubuntu/deploy.log`*
 
 
-### 🤖4.2 Update the Ansible Inventory
+### ⚙️4.2 Update the Ansible Inventory
 
 This step is done after switching to the `ubuntu` user and navigating into the ansible directory using `cd ansible`
 
@@ -152,7 +152,7 @@ nano inventory.ini
 - **To Save**: Press `Ctrl + O` then `Enter`.
 - **To Exit**: Press `Ctrl + X`.
 
-### 🤖4.3 Update the Ansible Playbook
+### ⚙️4.3 Update the Ansible Playbook
 ```bash
 nano web-server.yml
 ```
@@ -161,19 +161,19 @@ nano web-server.yml
 - **To Exit**: Press `Ctrl + X`.
 
 
-### 🤖4.4 Test Connectivity
+### ⚙️4.4 Test Connectivity
 ```bash
 ansible all -m ping
 ```
 
-### 🤖4.5 Install Dependencies
+### ⚙️4.5 Install Dependencies
 ```bash
 ansible-playbook requirements.yml
 ```
 
-## 🚀 5. Run the CI/CD Pipeline to Build Your App and Deploy It to EC2 with Ansible
+## 🚀 5. Run the CI/CD Pipeline in GitHub Actions to deploy the  Web Server
 
-### 🚀 5.1 Initiate the Deployment
+### Initiate the Deployment
 Trigger the automated CI/CD pipeline to build your Docker image and deploy it to AWS EC2 via SSM ( `web-server.yml` ansible playbook):
 
 
@@ -186,7 +186,7 @@ Trigger the automated CI/CD pipeline to build your Docker image and deploy it to
 
 - Ensure the **Main** branch is selected and click the green **Run workflow** button.
 
-### 🚀 5.2 Verify the Deployment
+### Verify the Deployment
 Once the workflow finishes, verify the results in the logs:
 
 - Navigate to **Actions** → Click on the **Latest Run.**
@@ -201,20 +201,85 @@ Once the workflow finishes, verify the results in the logs:
 
   - Failures: Ensure the `failed` count is `0`.
 
-> **Note**: *This pipeline has two main steps. First, the **Build** step creates a Docker image of your application and uploads it to Amazon ECR. Then, the **Deploy** step uses the Ansible Controller (through AWS SSM) to run the `web-server.yml` playbook which pulls the newest image, and redeploy the web server. You can watch both steps happen in real time on the GitHub **Actions** page, and the full workflow is located in `.github/workflows/deploy.yml.`*
+> **Note**: *This pipeline has two main steps. First, the **Build** step creates a Docker image of your application and uploads it to Amazon ECR. Then, the **Deploy** step uses the Ansible Controller (through AWS SSM) to run the `web-server.yml` playbook which pulls the newest image, and redeploy the web server. You can watch both steps happen in real time on the GitHub Actions page, and the full workflow is located in `.github/workflows/deploy.yml.`*
 
 ## 🌐 6. DNS and TLS Management (Cloudflare)
 To make your application accessible via your domain, follow these steps:
 
-### 🌐 6.1. DNS Configuration
-- Log in to your **Cloudflare Dashboard** and select your **domain**.
+### 6.1. DNS Configuration
+- Log in to your **Cloudflare Dashboard** and select your domain.
 - Navigate to **DNS > Records** and click **Add Record**.
 - Create an **A Record**:
    - **Name**: `web` (creates `web.yourdomain.com`)
    - **IPv4 address**: Your **Web Server Public IP**.
    - **Proxy status**: **Proxied** (Orange cloud enabled).
 
-### 🌐 6.2. SSL/TLS Encryption
+### 6.2. SSL/TLS Encryption
 - Navigate to **SSL/TLS > Overview**.
 - Click **Configure** and set the encryption mode to **Flexible**.
    *(This secures the connection between the user and Cloudflare while the origin server uses port 80).*
+
+## 📡 7.0 Deploy the Monitoring Server With a Private Cloudflare Tunnel
+
+This step sets up your full monitoring system **Prometheus**, **Grafana**, and supporting components and securely exposes the **Grafana** dashboard to the internet using a private **Cloudflare Tunnel**. This means you can access your monitoring dashboard through your own domain **without opening any ports** on your EC2 instance, keeping everything secure while still being easy to reach.
+
+### 📡 7.1 Update the Grafana Domain in monitoring-server.yml
+
+Before running the `monitoring-server.yml` playbook, you must update the **Grafana** domain settings with your own domain. This ensures **Grafana** works correctly with **Cloudflare Tunnel** and loads properly under your custom URL.
+
+**Edit the Monitoring-Server.yml ansible playbook**
+
+Before editing the `monitoring-server.yml` file, make sure you are inside the `ansible` directory on the **Ansible Controller**.
+
+```bash
+nano monitoring-server.yml
+```
+
+**Locate the `grafana_ini` Section**
+
+```bash
+vars:
+  grafana_ini:
+    security:
+      admin_user: "admin"
+      admin_password: "admin"
+    server:
+      domain: "monitoring.yourdomain.com"
+      root_url: "https://monitoring.yourdomain.com"
+      http_port: 3000
+```
+
+**Update Both Domain Fields**
+
+Replace both values with your own monitoring domain.
+
+```bash
+domain: "monitoring.yourdomain.com"
+root_url: "https://monitoring.yourdomain.com"
+```
+
+- **To Save**: Press `Ctrl + O` then `Enter`.
+- **To Exit**: Press `Ctrl + X`.
+
+### 📡 7.2 Deploy the Monitoring Server Using the Cloudflare Token
+
+The monitoring playbook requires a **Cloudflare Tunnel token** so it can authenticate and start the secure tunnel container. This token must be supplied manually when you run the playbook.
+
+**Get Your Cloudflare Tunnel Token**
+
+
+You can obtain the token from your Cloudflare dashboard:
+
+ - Log in to **Cloudflare**
+ - Go to **Zero Trust**
+ - Select **Access** → **Tunnels**
+ - Choose your tunnel (or create a new one)
+ - Copy the **Tunnel Token**
+
+ You will paste this token when running the playbook.
+
+**Run the Monitoring Playbook With the Token**
+
+```bash
+ansible-playbook monitoring-server.yml -e "cloudflare_token=abc123xyz987-long-token-value"
+```
