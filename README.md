@@ -42,9 +42,9 @@ After instrastructure deployment and before running the pipeline, configure thes
  - Select **Secrets and Variables**
  - Click **Actions**
  - Add the required secrets:
-   - AWS_ACCOUNT_ID (Your 12‑digit AWS account number)
-   - AWS_REGION (Region used for deployments (e.g., ap-southeast-1))
-   - INSTANCE_ID (Ansible Controller Instance ID)
+   - **AWS_ACCOUNT_ID** : (Your 12‑digit AWS account number)
+   - **AWS_REGION** : (Region used for deployments (e.g., ap-southeast-1))
+   - **INSTANCE_ID** : (Ansible Controller Instance ID)
 
 > **Reminder:** *This section is to be completed only upon the completion of Section 2.0.*
 
