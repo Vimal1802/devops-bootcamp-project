@@ -1,8 +1,3 @@
-
-# Project Title
-
-A brief description of what this project does and who it's for
-
 # DevOps Bootcamp Project  
 Automated Infrastructure Deployment using Terraform, AWS, Ansible, and GitHub Actions
 
