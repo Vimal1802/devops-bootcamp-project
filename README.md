@@ -118,7 +118,7 @@ Once the infrastructure has successfully deployed:
 
 Then run the following command to update the state:
 ```bash
-terraform init -migrate-state --auto-approve
+terraform init -migrate-state -force-copy
 ```
 
 **Reminder:** : *Revisit Section 1.2 and complete it before progressing to the next section.*
