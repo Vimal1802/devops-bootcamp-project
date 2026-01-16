@@ -117,7 +117,12 @@ terraform init -migrate-state
 ```
 
 ## 🖥️ 3. Access the Ansible Controller
-AWS Console → EC2 → Ansible Controller → Connect → SSM Session Manager
+ - Log in to the **AWS Management Console**
+ - Go to the **EC2** service
+ - In the instance list, locate and select **Ansible Controller**
+ - Click **Connect** at the top right
+ - Choose **Session Manager**
+ - Click **Start session**
 
 ## ⚙️ 4. Configure Ansible Environment
 Switch to the `ubuntu` user and navigate to the Ansible working directory. 
