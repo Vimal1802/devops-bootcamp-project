@@ -201,7 +201,7 @@ Once the workflow finishes, verify the results in the logs:
 
   - Failures: Ensure the `failed` count is `0`.
 
-> **Note**: *The CI/CD pipeline consists of two distinct stages: **Build** (packaging the application into a Docker image and pushing it to ECR) and **Deploy** (triggering Ansible via SSM). You can monitor the real-time progress and logs for both stages directly on the **Actions** page.*
+> **Note**: *The CI/CD pipeline has two stages: **Build**—packages the application into a Docker image and pushes it to ECR and **Deploy**—runs the web-server.yml Ansible playbook via SSM to pull the latest image and redeploy it. You can track both stages in real time on the GitHub Actions page, and the workflow is defined in `.github/workflows/deploy.yml.`*
 
 ## 🌐 6. DNS and TLS Management (Cloudflare)
 To make your application accessible via your domain, follow these steps:
