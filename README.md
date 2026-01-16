@@ -11,7 +11,7 @@ This project provisions cloud infrastructure using Terraform, configures servers
 - SSM Session Manager access to connect to the Ansible controller
 - Basic knowledge of Ansible and EC2
 
-# 🚀 Deployment Steps
+## 🚀 Deployment Steps
 
 ## 📥 1. Clone the Repository
 ```bash
@@ -206,15 +206,15 @@ Once the workflow finishes, verify the results in the logs:
 ## 🌐 6. DNS and TLS Management (Cloudflare)
 To make your application accessible via your domain, follow these steps:
 
-### 6.1. DNS Configuration
-- Log in to your **Cloudflare Dashboard** and select your domain.
+### 🌐 6.1. DNS Configuration
+- Log in to your **Cloudflare Dashboard** and select your **domain**.
 - Navigate to **DNS > Records** and click **Add Record**.
 - Create an **A Record**:
    - **Name**: `web` (creates `web.yourdomain.com`)
    - **IPv4 address**: Your **Web Server Public IP**.
    - **Proxy status**: **Proxied** (Orange cloud enabled).
 
-### 6.2. SSL/TLS Encryption
+### 🌐 6.2. SSL/TLS Encryption
 - Navigate to **SSL/TLS > Overview**.
 - Click **Configure** and set the encryption mode to **Flexible**.
    *(This secures the connection between the user and Cloudflare while the origin server uses port 80).*
