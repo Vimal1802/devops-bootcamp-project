@@ -1,8 +1,3 @@
-
-# Project Title
-
-A brief description of what this project does and who it's for
-
 # DevOps Bootcamp Project  
 Automated Infrastructure Deployment using Terraform, AWS, Ansible, and GitHub Actions
 
@@ -23,7 +18,7 @@ This project provisions cloud infrastructure using Terraform, configures servers
 git clone https://github.com/Vimal1802/devops-bootcamp-project.git && cd devops-bootcamp-project
 ```
 
-### 1.1 Push the Repository to Your Own GitHub Account
+### 📤1.1 Push the Repository to Your Own GitHub Account
 
 Because **GitHub Actions** workflows run exclusively on GitHub and not on local machines, you must push the cloned project to your own GitHub repository before the workflow can execute.
 
@@ -37,7 +32,7 @@ Because **GitHub Actions** workflows run exclusively on GitHub and not on local 
  git push -u origin main
  ```
 
-### 1.2 Add Required GitHub Secrets (Required for CI/CD)
+### 📤1.2 Add Required GitHub Secrets (Required for CI/CD)
 
 After instrastructure deployment and before running the pipeline, configure these secrets in:
 
@@ -55,7 +50,7 @@ After instrastructure deployment and before running the pipeline, configure thes
 
 ## 🏗️ 2. Deploy Infrastructure with Terraform
 
-### 🔑 2.1 Configure AWS Credentials (Required Before Using Terraform)
+### 🏗️ 2.1 Configure AWS Credentials (Required Before Using Terraform)
 
 Where to get the AWS credentials
 
@@ -133,7 +128,10 @@ terraform init -migrate-state
  - Click **Start session**
 
 ## ⚙️ 4. Configure Ansible Environment
-Switch to the `ubuntu` user and navigate to the Ansible working directory. 
+
+### ⚙️4.1 Switch to Ubuntu and Open the Ansible Folder
+
+To access the Ansible working directory, switch to the `ubuntu` user and navigate into the `ansible` folder:
 
 ```bash
 sudo su - ubuntu -c "cd ansible && bash"
@@ -142,7 +140,10 @@ sudo su - ubuntu -c "cd ansible && bash"
 > **Note:** *If the directory is missing, the initial setup through `user data` is likely still in progress. It may take a few minutes to install dependencies and move the Ansible configuration. Monitor progress with: `cat /home/ubuntu/deploy.log`*
 
 
-### Update the Ansible Inventory
+### ⚙️4.2 Update the Ansible Inventory
+
+This step is done after switching to the `ubuntu` user and navigating into the ansible directory using `cd ansible`
+
 ```bash
 nano inventory.ini
 ```
@@ -151,7 +152,7 @@ nano inventory.ini
 - **To Save**: Press `Ctrl + O` then `Enter`.
 - **To Exit**: Press `Ctrl + X`.
 
-### Update the Ansible Playbook
+### ⚙️4.3 Update the Ansible Playbook
 ```bash
 nano web-server.yml
 ```
@@ -160,12 +161,12 @@ nano web-server.yml
 - **To Exit**: Press `Ctrl + X`.
 
 
-### Test Connectivity
+### ⚙️4.4 Test Connectivity
 ```bash
 ansible all -m ping
 ```
 
-## Install Dependencies
+### ⚙️4.5 Install Dependencies
 ```bash
 ansible-playbook requirements.yml
 ```
@@ -205,7 +206,7 @@ Once the workflow finishes, verify the results in the logs:
 ## 🌐 6. DNS and TLS Management (Cloudflare)
 To make your application accessible via your domain, follow these steps:
 
-### a. DNS Configuration
+### 6.1. DNS Configuration
 - Log in to your **Cloudflare Dashboard** and select your domain.
 - Navigate to **DNS > Records** and click **Add Record**.
 - Create an **A Record**:
@@ -213,7 +214,7 @@ To make your application accessible via your domain, follow these steps:
    - **IPv4 address**: Your **Web Server Public IP**.
    - **Proxy status**: **Proxied** (Orange cloud enabled).
 
-### b. SSL/TLS Encryption
+### 6.2. SSL/TLS Encryption
 - Navigate to **SSL/TLS > Overview**.
 - Click **Configure** and set the encryption mode to **Flexible**.
    *(This secures the connection between the user and Cloudflare while the origin server uses port 80).*
