@@ -272,11 +272,17 @@ You can obtain the token from your Cloudflare dashboard:
 
  - Log in to **Cloudflare**
  - Go to **Zero Trust**
- - Select **Access** → **Tunnels**
- - Choose your tunnel (or create a new one)
- - Copy the **Tunnel Token**
+ - Select **Networks** → **Connectors** → **Cloudflare Tunnels**
+ - Select **Add a Tunnel** → **Cloudflared** → **Tunnel Name : `Monitoring Server`** → **Save Tunnel**
+ - Select **Docker** → Copy the `--token cloudflare` (keep this aside for later) → **Next** 
+> **Note:** *The `monitoring-server.yml` playbook is already "pre-programmed" with the Cloudflare docker image and the exact settings needed to run. Because these technical details are already built into the file, your only job is to only copy the Token*
+ - Route Traffic → **Published applications**
 
- You will paste this token when running the playbook.
+    - Hostname : 
+      - **Subdomain** : `monitoring` , **Domain** : `yourdomain.com`
+    - Service : 
+      - **Type** : `HTTP` , **URL** : `localhost : 3000`
+ - Click **Complete Setup**
 
 **Deploy the Monitoring Server With the Token**
 
