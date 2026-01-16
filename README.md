@@ -3,6 +3,10 @@ Automated Infrastructure Deployment using Terraform, AWS, Ansible, and GitHub Ac
 
 ## 📌 Overview
 This project provisions cloud infrastructure using Terraform, configures servers using Ansible, and deploys applications through a GitHub Actions CI/CD pipeline. Follow the steps below to deploy and manage the environment end‑to‑end.
+## Architecture Diagram
+
+<img width="938" height="785" alt="Screenshot 2026-01-16 230922" src="https://github.com/user-attachments/assets/d03ffa8e-1102-4e5a-9676-efdb5397b671" />
+
 
 ## 🧰 Prerequisites
 - Terraform installed locally
