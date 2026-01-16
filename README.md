@@ -57,7 +57,7 @@ After instrastructure deployment and before running the pipeline, configure thes
 
 ### 🔑 2.1 Configure AWS Credentials (Required Before Using Terraform)
 
-🔧 Where to get the AWS credentials
+Where to get the AWS credentials
 
  - Log in to the AWS Console
  - Go to **IAM**
@@ -81,6 +81,8 @@ You will be prompted to enter the following:
  - Default region name (Example): `ap-southeast-1`
  - Default output format : `You can simply press Enter to skip this (usually defaults to JSON).`
 
+### 🏗️ 2.2 Deploy Infrastructure with Terraform
+
 **Go into the Terraform folder**
 
 You need to run all Terraform commands from inside the terraform directory:
@@ -95,8 +97,7 @@ terraform init
 ```
 **Check what Terraform will create**
 
-This shows you a preview of the resources Terraform will build.
-Nothing is created yet — it's only a dry run:
+This provides a preview of the resources Terraform will create, without making any changes since it is only a dry run:
 ```bash
 terraform plan
 ```
@@ -112,7 +113,7 @@ Once the infrastructure has successfully deployed:
 
  - Open the `main.tf` file in the Terraform folder.
  - Find the section labeled `REMOTE STATE MANAGEMENT`
- - Uncomment that section (remove the # symbols).
+ - Uncomment only the backend block (remove the **#** symbols from the Terraform block, not the heading or description).
 
  - Save the file.
 
