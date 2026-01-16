@@ -1,3 +1,8 @@
+
+# Project Title
+
+A brief description of what this project does and who it's for
+
 # DevOps Bootcamp Project  
 Automated Infrastructure Deployment using Terraform, AWS, Ansible, and GitHub Actions
 
@@ -116,6 +121,8 @@ Then run the following command to update the state:
 terraform init -migrate-state
 ```
 
+**Reminder:** : *Revisit Section 1.2 and complete it before progressing to the next section.*
+
 ## 🖥️ 3. Access the Ansible Controller
  - Log in to the **AWS Management Console**
  - Go to the **EC2** service
@@ -131,7 +138,7 @@ Switch to the `ubuntu` user and navigate to the Ansible working directory.
 sudo su - ubuntu -c "cd ansible && bash"
 ```
 
-> **Note:** If the directory is missing, the initial setup through `user data` is likely still in progress. It may take a few minutes to install dependencies and move the Ansible configuration. Monitor progress with: `cat /home/ubuntu/deploy.log`
+> **Note:** *If the directory is missing, the initial setup through `user data` is likely still in progress. It may take a few minutes to install dependencies and move the Ansible configuration. Monitor progress with: `cat /home/ubuntu/deploy.log`*
 
 
 ### Update the Ansible Inventory
@@ -192,7 +199,7 @@ Once the workflow finishes, verify the results in the logs:
 
   - Failures: Ensure the `failed` count is `0`.
 
-> **Note**: The CI/CD pipeline consists of two distinct stages: **Build** (packaging the application into a Docker image and pushing it to ECR) and **Deploy** (triggering Ansible via SSM). You can monitor the real-time progress and logs for both stages directly on the **Actions** page.
+> **Note**: *The CI/CD pipeline consists of two distinct stages: **Build** (packaging the application into a Docker image and pushing it to ECR) and **Deploy** (triggering Ansible via SSM). You can monitor the real-time progress and logs for both stages directly on the **Actions** page.*
 
 ## 🌐 6. DNS and TLS Management (Cloudflare)
 To make your application accessible via your domain, follow these steps:
