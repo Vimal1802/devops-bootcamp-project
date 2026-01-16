@@ -353,7 +353,7 @@ You can confirm Node Exporter is working by querying Prometheus through Grafana.
  - Confirm that its status shows: `UP`
 
 
-### 7.4 Create CPU, Memory, and Disk Usage Visualizations in the Node Exporter Dashboard
+### 📡 7.4 Create CPU, Memory, and Disk Usage Visualizations in the Node Exporter Dashboard
 
 After importing the Node Exporter dashboard (`ID: 1860`), you can customize the homepage by adding your own CPU, Memory, and Disk Usage panels. These visualizations will appear at the top of the dashboard so you can easily monitor the Web Server’s performance.
 
