@@ -121,8 +121,6 @@ Then run the following command to update the state:
 terraform init -migrate-state -force-copy
 ```
 
-**Reminder:** : *Revisit Section 1.2 and complete it before progressing to the next section.*
-
 ## 🖥️ 3. Access the Ansible Controller
  - Log in to the **AWS Management Console**
  - Go to the **EC2** service
@@ -175,6 +173,8 @@ ansible all -m ping
 ```bash
 ansible-galaxy install -r requirements.yml
 ```
+
+> **Reminder:** *Revisit Section 1.2 and complete it before progressing to the next section.*
 
 ## 🚀 5. Run the CI/CD Pipeline in GitHub Actions to deploy the  Web Server
 
