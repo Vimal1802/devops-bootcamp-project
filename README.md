@@ -294,3 +294,74 @@ https://monitoring.yourdomain.com
 
 
 > **Note**: *You do not need to manually create a DNS or CNAME record in Cloudflare for your monitoring domain. Because this playbook uses a **Cloudflare Tunnel token**, Cloudflare **automatically creates and manages** the required CNAME record when the tunnel starts, so your monitoring domain (e.g., monitoring.yourdomain.com) will point to the correct tunnel endpoint **without any additional setup**.*
+
+### 📡 7.3 Configure Grafana to monitor the Web Server
+
+**Log In to Grafana**
+
+Open your monitoring URL in your browser
+
+```bash
+https://monitoring.yourdomain.com
+```
+
+Log in with the default Grafana credentials
+
+ - **Username:** admin
+ - **Password:** admin
+
+Grafana will ask you to change the password — update it for security.
+
+**Add Prometheus as a Data Source**
+
+Grafana needs to know where Prometheus is running so it can query your Node Exporter metrics.
+
+ - In Grafana’s left sidebar, click **Settings** → **Data Sources**
+ - Click **Add data source**
+ - Select **Prometheus**
+ - Under HTTP URL, enter:
+   - `http://localhost:9090`
+ - Scroll down and click **Save & Test**
+ - You should see: `Data source is working`
+
+**Confirm That Node Exporter Metrics Are Being Collected**
+
+You can confirm Node Exporter is working by querying Prometheus through Grafana.
+
+ - In the left sidebar, click **Explore**
+ - Select your Prometheus data source
+ - Enter a test query:-
+   - **CPU Usage Metrics** : `node_cpu_seconds_total`
+   - **Memory Usage Metrics** : `node_memory_MemAvailable_bytes`
+   - **Disk Usage Metrics** : `node_filesystem_avail_bytes`
+ - You should see time‑series results — this confirms Prometheus is scraping your server.
+
+**Import the Node Exporter Dashboards**
+
+ - In Grafana, click + (Create) → Import
+ - In the “Import Via Grafana.com” field, enter dashboard ID: `1860`
+ - Click **Load**
+ - Select your Prometheus data source
+ - Click **Import**
+
+ **View CPU, Memory, and Disk Usage Metrics**
+
+CPU Usage
+
+ - Real‑time CPU usage (%)
+ - CPU load averages
+ - Per‑core breakdown
+ - Idle, user, system time graphs
+
+Memory Usage
+
+ - Total memory
+ - Used vs available memory
+ - Cache / buffers
+ - Memory utilization (%)
+
+Disk Usage
+
+ - Disk space usage per mount point
+ - Available vs used bytes
+ - Disk I/O read/write throughput
