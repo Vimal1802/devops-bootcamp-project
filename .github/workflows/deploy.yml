@@ -61,6 +61,12 @@ jobs:
             --output text)
           
           echo "Command sent! ID: $COMMAND_ID"
+
+          # 1.5 PAUSE: Give AWS 15 seconds to index the Command ID. 
+          # This prevents the "InvocationDoesNotExist" error.
+          echo "Waiting for AWS to index command ID..."
+          sleep 15
+          # --- AMENDMENT END ---
           
           # 2. Forces GitHub to wait for Ansible to finish. 
           aws ssm wait command-executed \
