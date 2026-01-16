@@ -278,8 +278,19 @@ You can obtain the token from your Cloudflare dashboard:
 
  You will paste this token when running the playbook.
 
-**Run the Monitoring Playbook With the Token**
+**Deploy the Monitoring Server With the Token**
 
 ```bash
 ansible-playbook monitoring-server.yml -e "cloudflare_token=abc123xyz987-long-token-value"
 ```
+
+**Access the Grafana Dashboard**
+
+After the deployment completes, open your browser and go to your monitoring domain  to access the Grafana dashboard.
+
+```bash
+https://monitoring.yourdomain.com
+```
+
+
+> **Note**: *You do not need to manually create a DNS or CNAME record in Cloudflare for your monitoring domain. Because this playbook uses a **Cloudflare Tunnel token**, Cloudflare **automatically creates and manages** the required CNAME record when the tunnel starts, so your monitoring domain (e.g., monitoring.yourdomain.com) will point to the correct tunnel endpoint **without any additional setup**.*
