@@ -319,7 +319,8 @@ Grafana needs to know where Prometheus is running so it can query your Node Expo
  - In Grafana’s left sidebar, click **Settings** → **Data Sources**
  - Click **Add data source**
  - Select **Prometheus**
- - Under HTTP URL, enter: `http://localhost:9090`
+ - Under HTTP URL, enter:
+   - `http://localhost:9090`
  - Scroll down and click **Save & Test**
  - You should see: `Data source is working`
 
@@ -352,24 +353,21 @@ You can confirm Node Exporter is working by querying Prometheus through Grafana.
  - Confirm that its status shows: `UP`
 
 
- **View CPU, Memory, and Disk Usage Metrics**
+### 7.4 Create CPU, Memory, and Disk Usage Visualizations in the Node Exporter Dashboard
 
-CPU Usage
+After importing the Node Exporter dashboard (`ID: 1860`), you can customize the homepage by adding your own CPU, Memory, and Disk Usage panels. These visualizations will appear at the top of the dashboard so you can easily monitor the Web Server’s performance.
 
- - Real‑time CPU usage (%)
- - CPU load averages
- - Per‑core breakdown
- - Idle, user, system time graphs
+**Open the Node Exporter Dashboard**
 
-Memory Usage
+ - In Grafana’s left sidebar, click Dashboards
+ - Open **Node Exporter Full (ID: 1860)**
 
- - Total memory
- - Used vs available memory
- - Cache / buffers
- - Memory utilization (%)
+**Enter Edit Mode**
 
-Disk Usage
+ - Click the Dashboard Settings menu (⋮) in the top-right corner
+ - Select **Edit**
+ - Drag CPU, Memory, and Disk panels to the **top rows**
+ - Resize them as needed
+ - Save the dashboard layout
 
- - Disk space usage per mount point
- - Available vs used bytes
- - Disk I/O read/write throughput
+This keeps the existing panels but makes the important ones easier to find.
