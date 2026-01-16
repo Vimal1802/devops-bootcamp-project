@@ -1,70 +1,54 @@
-# 1. EXTERNAL-FACING SECURITY POLICY
-# Manages public access for the web application and facilitates secure cross-tier monitoring.
+# 1. PUBLIC SECURITY GROUP (For the Web Server)
 resource "aws_security_group" "public_sg" {
   name        = "devops-public-sg"
-  description = "Public Web and Internal Scraping"
-  vpc_id      = aws_vpc.devops_vpc.id
+  description = "Security group for public-facing web server"
+  vpc_id      = aws_vpc.main.id 
 
-  # Enables global HTTP access to the application layer.
+  # Port 80: Allow web traffic from anywhere in the world
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTP from anywhere"
   }
 
-  # Standard outbound configuration to allow resource updates and external API communication.
+  # Port 9100: Allow Prometheus to scrape metrics 
+  # This ONLY allows your Monitoring Server (10.0.0.136) to see the metrics
+  ingress {
+    from_port   = 9100
+    to_port     = 9100
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.136/32"] 
+    description = "Allow Prometheus scraping from Monitoring Server"
+  }
+
+  # Port 22: REMOVED. Management handled by AWS SSM.
+
+  # Outbound: REQUIRED for SSM Agent to communicate with AWS
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-  tags = { Name = "devops-public-sg" }
 }
 
-# Authorizes specific telemetry traffic from the Private Monitoring Tier to the Public Application Tier.
-resource "aws_security_group_rule" "allow_prometheus_scraping" {
-  type                     = "ingress"
-  from_port                = 9100
-  to_port                  = 9100
-  protocol                 = "tcp"
-  description              = "Prometheus scraping from monitoring server"
-  security_group_id        = aws_security_group.public_sg.id
-  source_security_group_id = aws_security_group.private_sg.id
-}
-
-# 2. INTERNAL MANAGEMENT & MONITORING SECURITY POLICY
-# Isolates administrative and monitoring services while maintaining required connectivity for management tools.
+# 2. PRIVATE SECURITY GROUP (For Ansible Controller & Monitoring Server)
 resource "aws_security_group" "private_sg" {
   name        = "devops-private-sg"
-  description = "Internal Management - No Inbound Ports Needed"
-  vpc_id      = aws_vpc.devops_vpc.id
+  description = "Security group for internal management and monitoring"
+  vpc_id      = aws_vpc.main.id
 
-  # Permits unrestricted internal traffic between private management and monitoring resources.
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    self        = true
-  }
+  # Port 22: REMOVED. Management handled by AWS SSM.
+  # Note: Since these servers are in a private subnet and have no public IP, 
+  # having no ingress rules makes them extremely secure.
 
-  # Facilitates secure inbound communication from the Public Tier for log and metric collection.
-  ingress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    security_groups = [aws_security_group.public_sg.id]
-  }
-
-  # Authorizes essential outbound traffic for SSM management, ECR image retrieval, and Cloudflare tunneling.
+  # Outbound: Essential for Cloudflare Tunnel and SSM to connect out to the internet
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-  tags = { Name = "devops-private-sg" }
 }
