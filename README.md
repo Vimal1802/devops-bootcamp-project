@@ -171,7 +171,7 @@ ansible all -m ping
 ansible-playbook requirements.yml
 ```
 
-## 🚀 5. Run the CI/CD Pipeline in GitHub Actions to deploy the  Web Server
+## 🚀 5. Run the CI/CD Pipeline to Build Your App and Deploy It to EC2 with Ansible
 
 ### 🚀 5.1 Initiate the Deployment
 Trigger the automated CI/CD pipeline to build your Docker image and deploy it to AWS EC2 via SSM ( `web-server.yml` ansible playbook):
