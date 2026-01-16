@@ -344,6 +344,15 @@ You can confirm Node Exporter is working by querying Prometheus through Grafana.
  - Select your Prometheus data source
  - Click **Import**
 
+**Verify That Prometheus Is Scraping the Web Server**
+
+ - In Grafana, open a new tab and go to your Prometheus UI : `http://localhost:9090`
+ - In the top navigation bar, click **Status**
+ - Click **Targets**
+ - Look for the following Prometheus job: `web_server_node`
+ - Confirm that its status shows: `UP`
+
+
  **View CPU, Memory, and Disk Usage Metrics**
 
 CPU Usage
