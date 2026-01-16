@@ -2,7 +2,7 @@
 resource "aws_security_group" "public_sg" {
   name        = "devops-public-sg"
   description = "Security group for public-facing web server"
-  vpc_id      = aws_vpc.main.id 
+  vpc_id      = aws_vpc.devops_vpc.id 
 
   # Port 80: Allow web traffic from anywhere in the world
   ingress {
@@ -38,7 +38,7 @@ resource "aws_security_group" "public_sg" {
 resource "aws_security_group" "private_sg" {
   name        = "devops-private-sg"
   description = "Security group for internal management and monitoring"
-  vpc_id      = aws_vpc.main.id
+  vpc_id      = aws_vpc.devops_vpc.id
 
   # Port 22: REMOVED. Management handled by AWS SSM.
   # Note: Since these servers are in a private subnet and have no public IP, 
