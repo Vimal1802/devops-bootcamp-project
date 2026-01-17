@@ -217,7 +217,7 @@ ansible-galaxy install -r requirements.yml
 
 ## 🚀 5. Run the CI/CD Pipeline in GitHub Actions to deploy the Web Application
 
-### Initiate the Deployment
+### 🚀 5.1 Initiate the Deployment
 Trigger the automated CI/CD pipeline to build your Docker image and deploy it to AWS EC2 via SSM ( `web-server.yml` ansible playbook):
 
 - Navigate to your **GitHub Repository** and click on the **Actions** tab.
@@ -249,7 +249,7 @@ Once the workflow finishes, verify the results in the action section:
 
 > **Note**: *This pipeline has two main steps. First, the **Build** step creates a Docker image of your application and uploads it to Amazon ECR. Then, the **Deploy** step uses the Ansible Controller (through AWS SSM) to run the `web-server.yml` playbook which pulls the newest image, and redeploy the web server. You can watch both steps happen in real time on the GitHub Actions page, and the full workflow is located in `.github/workflows/deploy.yml.`*
 
-### 🚀 5.1 Verification and Connectivity Testing
+### 🚀 5.2 Verification and Connectivity Testing
 
 ```bash
 http://web-server-public-ip
