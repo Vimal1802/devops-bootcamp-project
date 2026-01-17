@@ -1,19 +1,37 @@
 # DevOps Bootcamp Project  
-Automated Infrastructure Deployment using Terraform, AWS, Ansible, and GitHub Actions
 
-## 📌 Overview
-This project provisions cloud infrastructure using Terraform, configures servers using Ansible, and deploys applications through a GitHub Actions CI/CD pipeline. Follow the steps below to deploy and manage the environment end‑to‑end.
+# 📌 Overview
+This project demonstrates a complete End-to-End DevOps Lifecycle, automating the transition from raw infrastructure to a monitored, production-ready application. It integrates Industry-standard tools to create a seamless "Push-to-Deploy" experience.
 
-## Architecture Diagram
+## 🖼️ Architecture Diagram
 
 <img width="938" height="785" alt="Screenshot 2026-01-16 230922" src="https://github.com/user-attachments/assets/57efecf2-f980-4367-9de7-ce217dda8eb2" />
 
+## 🧩 Core Integrated Technologies
+ - **Infrastructure as Code (IaC)**: Terraform provisions a custom AWS VPC, including public subnets, an Internet Gateway, and EC2 instances for the Web and Monitoring layers.
+
+ - **Configuration Management**: Ansible automates the environment setup, ensuring consistent installation of Docker, security hardening, and service configurations across all nodes.
+
+ - **CI/CD Pipeline**: GitHub Actions handles the build-and-deploy logic. It builds Docker images, pushes them to Amazon ECR, and triggers remote deployment via AWS Systems Manager (SSM).
+
+ - **Secure Connectivity**: Cloudflare Tunnels are utilized to expose the Monitoring stack (Grafana) to the internet without opening inbound firewall ports, significantly reducing the attack surface.
+
+ - **Observability**: A Prometheus and Grafana stack provides real-time visibility into system metrics (CPU, Memory, Disk) using Node Exporter.
+
 ## 🧰 Prerequisites
-- Terraform installed locally
-- AWS account with required IAM permissions
-- GitHub repository forked or cloned
-- SSM Session Manager access to connect to the Ansible controller
-- Basic knowledge of Ansible and EC2
+
+ - **AWS Account**: Active account with Admin access.
+
+ - **GitHub Account**: To host code and run CI/CD workflows.
+
+ - **Domain Name**: Managed via Cloudflare for DNS and Tunnels.
+
+ - **Local Tools**: Terraform, AWS CLI, and Git installed.
+
+ - **AWS Credentials**: Access Key ID and Secret Access Key.
+
+ - **IAM Permissions**: Access to VPC, EC2, S3, ECR, and Systems Manager (SSM).
+
 
 # 🚀 Deployment Steps
 
@@ -387,7 +405,7 @@ Grafana needs to know where Prometheus is running so it can query your Node Expo
  - Click **Load**
  - Name : `Web Server Monitoring`
  - Click **Import**
- 
+
 ### 📡 7.4 Create CPU, Memory, and Disk Usage Visualizations in the Node Exporter Dashboard
 
 After importing the Node Exporter dashboard (`ID: 1860`), you can customize the homepage by adding your own CPU, Memory, and Disk Usage panels. These visualizations will appear at the top of the dashboard so you can easily monitor the Web Server’s performance.
