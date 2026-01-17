@@ -298,7 +298,7 @@ To make your application accessible via your domain, follow these steps:
 ### 🌐 6.2 Verification and Connectivity Testing
 
 ```bash
-https://web.your-domain.com/
+web.your-domain.com
 ```
 
 ## 📡 7.0 Deploy the Monitoring Server With a Private Cloudflare Tunnel
@@ -379,7 +379,7 @@ ansible-playbook monitoring-server.yml -e "cloudflare_token=abc123xyz987-long-to
 After the deployment completes, open your browser and go to your monitoring domain  to access the Grafana dashboard.
 
 ```bash
-https://monitoring.yourdomain.com
+monitoring.yourdomain.com
 ```
 
 
@@ -392,7 +392,7 @@ https://monitoring.yourdomain.com
 Open your monitoring URL in your browser
 
 ```bash
-https://monitoring.yourdomain.com
+monitoring.yourdomain.com
 ```
 
 Log in with the default Grafana credentials
