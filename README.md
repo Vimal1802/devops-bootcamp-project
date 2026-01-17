@@ -3,16 +3,24 @@
 # 📌 Overview
 This project demonstrates a complete End-to-End DevOps Lifecycle, automating the transition from raw infrastructure to a monitored, production-ready application. It integrates Industry-standard tools to create a seamless "Push-to-Deploy" experience.
 
-**Web application URL :** `www.web.vimalops.com`
+**Web application URL :** 
+```bash
+web.vimalops.com
+```
 
-**Monitoring URL :** `www.monitoring.vimalops.com`
+**Monitoring URL :**
+```bash
+monitoring.vimalops.com
+```
 
-**GitHub repository URL :** `https://github.com/Vimal1802/devops-bootcamp-project.git`
-
+**GitHub repository URL :**
+```bash
+https://github.com/Vimal1802/devops-bootcamp-project.git
+```
 
 ## 🖼️ Architecture Diagram
 
-<img width="938" height="785" alt="Architecture Diagram" src="https://github.com/user-attachments/assets/bc496217-d080-46ba-96df-c66a3012fe8c" />
+<img width="938" height="785" alt="Architecture Diagram" src="https://github.com/user-attachments/assets/2e7f893b-5952-4229-a061-d184f279e651" />
 
 ## 🧩 Core Integrated Technologies
  - **Infrastructure as Code (IaC)**: Terraform provisions a custom AWS VPC, including public subnets, an Internet Gateway, and EC2 instances for the Web and Monitoring layers.
