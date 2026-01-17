@@ -274,7 +274,7 @@ Once the workflow finishes, verify the results in the action section:
 ### 🚀 5.2 Verification and Connectivity Testing
 
 ```bash
-http://web-server-public-ip
+web-server-public-ip
 ```
 
 ## 🌐 6. DNS and TLS Management (Cloudflare)
