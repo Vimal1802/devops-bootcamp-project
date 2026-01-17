@@ -12,6 +12,7 @@
     app_path: "/home/ubuntu"
     raw_compose_url: "https://raw.githubusercontent.com/Vimal1802/devops-bootcamp-project/main/app/docker-compose.yml"
     domain_name: "web.your-domain.com"
+    image_tag: "latest"
 
   pre_tasks:
     # #3. SYSTEM DEPENDENCIES
