@@ -217,7 +217,7 @@ vars:
   raw_compose_url: "https://raw.githubusercontent.com/<your-username>/devops-bootcamp-project/main/app/docker-compose.yml"
 ```
 
-**Update `ecr_registry` and `raw_compose_url` fields**
+**Update `ecr_registry` , `ecr_url` and `raw_compose_url` fields**
 
 - **To Save**: Press `Ctrl + O` then `Enter`.
 - **To Exit**: Press `Ctrl + X`.
