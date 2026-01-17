@@ -346,6 +346,8 @@ You can obtain the token from your Cloudflare dashboard:
 
 **Deploy the Monitoring Server With the Token**
 
+Make sure you are inside the `ansible` directory on the **Ansible Controller**.
+
 ```bash
 ansible-playbook monitoring-server.yml -e "cloudflare_token=abc123xyz987-long-token-value"
 ```
