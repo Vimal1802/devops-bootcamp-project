@@ -21,7 +21,7 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 # #4. REMOTE STATE MANAGEMENT
-# Uncomment this block once the initial resources are provisioned and run 'terraform init -migrate-state' to transition the local state file.
+# #Uncomment this block once the initial resources are provisioned and run 'terraform init -migrate-state' to transition the local state file.
 # terraform {
 #   backend "s3" {
 #     bucket = "devops-bootcamp-terraform-vimaldeep"
