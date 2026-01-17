@@ -370,27 +370,7 @@ Grafana needs to know where Prometheus is running so it can query your Node Expo
  - Scroll down and click **Save & Test**
  - You should see: `Successfully queried the Prometheus API.`
 
-**Confirm That Node Exporter Metrics Are Being Collected**
-
-You can confirm Node Exporter is working by querying Prometheus through Grafana.
-
- - In the left sidebar, click **Explore**
- - Select your Prometheus data source
- - Enter a test query:-
-   - **CPU Usage Metrics** : `node_cpu_seconds_total`
-   - **Memory Usage Metrics** : `node_memory_MemAvailable_bytes`
-   - **Disk Usage Metrics** : `node_filesystem_avail_bytes`
- - You should see time‑series results — this confirms Prometheus is scraping your server.
-
-**Import the Node Exporter Dashboards**
-
- - In Grafana on the top right , click + (Create) → Import Dashboard
- - In the `Find and Import Dashboard` field, enter dashboard ID: `1860`
- - Click **Load**
- - Name : `Web Server Monitoring`
- - Click **Import**
-
-**Verify That Prometheus Is Scraping the Web Server**
+**Verify Metrics Collection (The "Health Check")**
 
  - Click the **Explore** icon in the left sidebar.
  - Ensure the data source is set to **Prometheus**.
@@ -400,7 +380,14 @@ You can confirm Node Exporter is working by querying Prometheus through Grafana.
    - If the value is `1`, the server is `UP` and scraping correctly.
    - If the value is `0`, Prometheus can see the server, but the Node Exporter is down.
 
+**Import the Node Exporter Dashboards**
 
+ - In Grafana on the top right , click + (Create) → Import Dashboard
+ - In the `Find and Import Dashboard` field, enter dashboard ID: `1860`
+ - Click **Load**
+ - Name : `Web Server Monitoring`
+ - Click **Import**
+ 
 ### 📡 7.4 Create CPU, Memory, and Disk Usage Visualizations in the Node Exporter Dashboard
 
 After importing the Node Exporter dashboard (`ID: 1860`), you can customize the homepage by adding your own CPU, Memory, and Disk Usage panels. These visualizations will appear at the top of the dashboard so you can easily monitor the Web Server’s performance.
