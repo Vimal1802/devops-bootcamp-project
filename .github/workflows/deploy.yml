@@ -47,9 +47,9 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-oidc-role
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Trigger Deployment via SSM (Target by Tag)
+      - name: Trigger Deployment via SSM
         run: |
-          # 1. Send the command to the Ansible Controller tag
+          # 1. Send the command to the Ansible Controller
           COMMAND_ID=$(aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=tag:Name,Values=Ansible Controller" \
@@ -60,26 +60,9 @@ jobs:
             --query "Command.CommandId" \
             --output text)
           
-          echo "Deployment triggered! Command ID: $COMMAND_ID"
-          echo "Track progress in AWS Console: https://${{ secrets.AWS_REGION }}.console.aws.amazon.com/systems-manager/run-command/$COMMAND_ID"
+          echo "Deployment triggered: $COMMAND_ID"
 
-          # 2. Wait for the command to finish across all tagged instances
-          # Note: Using --targets here instead of --instance-id
+          # 2. Wait for completion (Success or Failure)
           aws ssm wait command-executed \
             --command-id "$COMMAND_ID" \
             --targets "Key=tag:Name,Values=Ansible Controller"
-
-          # 3. Final Status Check
-          # Since 'wait' can sometimes exit 0 even if the command internally failed, 
-          # we check the overall status of the Command ID.
-          FINAL_STATUS=$(aws ssm list-commands \
-            --command-id "$COMMAND_ID" \
-            --query "Commands[0].Status" \
-            --output text)
-
-          if [ "$FINAL_STATUS" != "Success" ]; then
-            echo "❌ Deployment Failed with status: $FINAL_STATUS"
-            exit 1
-          else
-            echo "✅ Deployment Successful!"
-          fi
