@@ -49,6 +49,9 @@ resource "aws_route_table" "private_route" {
 # Enables bidirectional internet communication for resources within the Public Tier.
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.devops_vpc.id
+
+  tags = { Name = "devops-igw" }
+
 }
 
 # Reserves a Static Elastic IP (EIP) for the NAT Gateway to establish a persistent and recognizable outbound identity for all traffic originating from the Private Tier.
@@ -61,6 +64,8 @@ resource "aws_nat_gateway" "ngw" {
   allocation_id = aws_eip.nat_eip.id
   subnet_id      = aws_subnet.public.id
   depends_on    = [aws_internet_gateway.igw]
+
+    tags = { Name = "devops-ngw" }
 }
 
 # 5. SUBNET-TO-ROUTE ASSOCIATIONS
