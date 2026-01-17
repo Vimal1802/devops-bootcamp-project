@@ -17,35 +17,44 @@ This project provisions cloud infrastructure using Terraform, configures servers
 
 # 🚀 Deployment Steps
 
-## 📥 1. Clone the Repository
+## 📥 1. Cloning the Repository via GitHub
+To use this project, you need to download the code to your computer and then "re-upload" it to your own GitHub account. This ensures you have full control over the GitHub Actions automation.
+
+### 📥 1.1 Clone the Template
+
 ```bash
 git clone https://github.com/Vimal1802/devops-bootcamp-project.git && cd devops-bootcamp-project
 ```
 
-### 📤1.1 Push the Repository to Your Own GitHub Account
+### 📥 1.2 Transfer to YOUR GitHub Account
 
-Because **GitHub Actions** workflows run exclusively on GitHub and not on local machines, you must push the cloned project to your own GitHub repository before the workflow can execute.
+**Create a new Repo**: Go to GitHub.new and create a repository named `devops-bootcamp-project`. (Leave it empty—do not add a README or License).
 
+**Disconnect from Source**: Remove the link to my original repository
 ```bash
- git remote remove origin
- ```
- ```bash
- git remote add origin https://github.com/<your-username>/<your-repo>.git
- ```
- ```bash
- git push -u origin main
- ```
+git remote remove origin
+```
 
-### 📤1.2 Add Required GitHub Secrets (Required for CI/CD)
+**Connect to Your Repo**: Link it to your new personal repository
+```bash
+git remote add origin https://github.com/<your-username>/devops-bootcamp-project.git
+```
 
-After instrastructure deployment and before running the pipeline, configure these secrets in:
+**Upload the Code**: Push the files to your account
+```bash
+git push -u origin main
+```
+
+### 📤1.3 Add Required GitHub Secrets (Required for CI/CD)
+
+After instrastructure deployment (**Section 2**) and before running the pipeline, configure these secrets in:
 
 - Go to **GitHub.com**
  - Open Your Repository
  - Click **Settings**
  - Select **Secrets and Variables**
  - Click **Actions**
- - Add the required secrets:
+ - Add the repository secrets:
    - **AWS_ACCOUNT_ID** : (Your 12‑digit AWS account number)
    - **AWS_REGION** : (Region used for deployments (e.g., ap-southeast-1))
    - **INSTANCE_ID** : (Ansible Controller Instance ID)
@@ -155,13 +164,31 @@ nano inventory.ini
 - **To Save**: Press `Ctrl + O` then `Enter`.
 - **To Exit**: Press `Ctrl + X`.
 
-### ⚙️4.3 Update the Ansible Playbook
+### ⚙️4.3 Update the Ansible Playbook (Web Server)
 ```bash
 nano web-server.yml
 ```
-- **Instructions**: After opening the file , navigate using your arrow keys and replace the placeholders with your **ECR repository URL**
+**Locate the `vars` Section**
+
+```bash
+vars:
+  # #1. ECR CONFIGURATION
+  # Ensure these match your ECR outputs from Terraform
+  ecr_registry: "update-ecr-url.dkr.ecr.ap-southeast-1.amazonaws.com"
+  ecr_url: "{{ ecr_registry }}/devops-bootcamp/final-project-vimaldeep"
+    
+  # #2. DEPLOYMENT PATHS
+  app_path: "/home/ubuntu"
+  raw_compose_url: "https://raw.githubusercontent.com/<your-username>/devops-bootcamp-project/main/app/docker-compose.yml"
+  domain_name: "web.your-domain.com"
+```
+
+**Update `ecr_registry` , `raw_compose_url,`and `domain_name` fields**
+
 - **To Save**: Press `Ctrl + O` then `Enter`.
 - **To Exit**: Press `Ctrl + X`.
+
+> **Note:** *This configuration is only required once and during the initial setup.*
 
 
 ### ⚙️4.4 Test Connectivity
@@ -184,6 +211,8 @@ Trigger the automated CI/CD pipeline to build your Docker image and deploy it to
 
 
 - Navigate to your **GitHub Repository** and click on the **Actions** tab.
+
+- Click the **Enable Actions on this repository** (You may skip this if you have already enabled it)
 
 - In the left sidebar, select the **Build and Deploy** workflow.
 
