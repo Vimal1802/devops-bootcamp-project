@@ -250,6 +250,8 @@ Trigger the automated CI/CD pipeline to build your Docker image and deploy it to
 
 - Ensure the **Main** branch is selected and click the green **Run workflow** button.
 
+**Note:** *This pipeline is configured to trigger automatically whenever a merge to the main branch occurs. However, for this initial deployment, we will trigger the pipeline manually to verify the environment setup.*
+
 ### Verify the Deployment
 Once the workflow finishes, verify the results in the action section:
 
