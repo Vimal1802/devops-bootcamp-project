@@ -47,9 +47,9 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-oidc-role
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Trigger Deployment via SSM
+      - name: Trigger Deployment via SSM (Target by Tag)
         run: |
-          # 1. Sends the command to the Ansible Controller via Tag
+          # 1. Send the command to the Ansible Controller tag
           COMMAND_ID=$(aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=tag:Name,Values=Ansible Controller" \
@@ -60,45 +60,26 @@ jobs:
             --query "Command.CommandId" \
             --output text)
           
-          echo "Command sent! ID: $COMMAND_ID"
+          echo "Deployment triggered! Command ID: $COMMAND_ID"
+          echo "Track progress in AWS Console: https://${{ secrets.AWS_REGION }}.console.aws.amazon.com/systems-manager/run-command/$COMMAND_ID"
 
-          # 1.5 PAUSE: Give AWS 15 seconds to index the Command ID. 
-          # This prevents the "InvocationDoesNotExist" error.
-          echo "Waiting for AWS to index command ID..."
-          sleep 15
-          # --- AMENDMENT END ---
-          
-          # ... (Your steps 1, 1.5, and 2 remain the same) ...
-
-          # 2. Forces GitHub to wait for Ansible to finish. 
+          # 2. Wait for the command to finish across all tagged instances
+          # Note: Using --targets here instead of --instance-id
           aws ssm wait command-executed \
             --command-id "$COMMAND_ID" \
-            --instance-id "${{ secrets.INSTANCE_ID }}"
+            --targets "Key=tag:Name,Values=Ansible Controller"
 
-          # 2.5. CHECK FINAL STATUS
-          STATUS=$(aws ssm get-command-invocation \
+          # 3. Final Status Check
+          # Since 'wait' can sometimes exit 0 even if the command internally failed, 
+          # we check the overall status of the Command ID.
+          FINAL_STATUS=$(aws ssm list-commands \
             --command-id "$COMMAND_ID" \
-            --instance-id "${{ secrets.INSTANCE_ID }}" \
-            --query "Status" \
+            --query "Commands[0].Status" \
             --output text)
 
-          # 3. FETCH AND PRINT ANSIBLE LOGS
-          echo "--- START OF ANSIBLE OUTPUT ---"
-          aws ssm get-command-invocation \
-            --command-id "$COMMAND_ID" \
-            --instance-id "${{ secrets.INSTANCE_ID }}" \
-            --query "StandardOutputContent" \
-            --output text
-          echo "--- END OF ANSIBLE OUTPUT ---"
-
-          # 4. FAIL THE GITHUB ACTION IF COMMAND FAILED
-          if [ "$STATUS" != "Success" ]; then
-            echo "Deployment Failed with status: $STATUS"
-            # Optional: Print error output if it exists
-            aws ssm get-command-invocation \
-              --command-id "$COMMAND_ID" \
-              --instance-id "${{ secrets.INSTANCE_ID }}" \
-              --query "StandardErrorContent" \
-              --output text
+          if [ "$FINAL_STATUS" != "Success" ]; then
+            echo "❌ Deployment Failed with status: $FINAL_STATUS"
             exit 1
+          else
+            echo "✅ Deployment Successful!"
           fi
