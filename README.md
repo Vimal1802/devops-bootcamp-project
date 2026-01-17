@@ -210,7 +210,7 @@ vars:
   # #1. ECR CONFIGURATION
   # Ensure these match your ECR outputs from Terraform
   ecr_registry: "update-ecr-url.dkr.ecr.ap-southeast-1.amazonaws.com"
-  ecr_url: "{{ ecr_registry }}/devops-bootcamp/final-project-vimaldeep"
+  ecr_url: "{{ ecr_registry }}/ecr-repository-name"
     
   # #2. DEPLOYMENT PATHS
   app_path: "/home/ubuntu"
