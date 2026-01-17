@@ -37,3 +37,8 @@ output "repo_url" {
   description = "The URL of the ECR Repository"
   value       = aws_ecr_repository.basic_repo.repository_url
 }
+
+output "ecr_repository_name" {
+  description = "The name of the ECR repository to be used in Ansible vars"
+  value       = aws_ecr_repository.basic_repo.name
+}
