@@ -20,7 +20,7 @@ https://github.com/Vimal1802/devops-bootcamp-project.git
 
 ## 🖼️ Architecture Diagram
 
-<img width="938" height="785" alt="Architecture Diagram" src="https://github.com/user-attachments/assets/2e7f893b-5952-4229-a061-d184f279e651" />
+<img width="938" height="785" alt="Architecture Diagram" src="https://github.com/user-attachments/assets/5d6163ef-8ef9-46e3-a143-f10f20636826" />
 
 ## 🧩 Core Integrated Technologies
  - **Infrastructure as Code (IaC)**: Terraform provisions a custom AWS VPC, including public subnets, an Internet Gateway, and EC2 instances for the Web and Monitoring layers.
@@ -133,6 +133,11 @@ This command downloads the required Terraform plugins:
 ```bash
 terraform init
 ```
+
+⚠️ **Important: Customize Before Deployment**
+
+The Terraform configuration currently contains hard-coded resource names and values (e.g., final-project-vimaldeep). Before running the commands below, please search the `.tf` files and update the resources to match your own naming preference
+
 **Check what Terraform will create**
 
 This provides a preview of the resources Terraform will create, without making any changes since it is only a dry run:
