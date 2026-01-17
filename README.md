@@ -47,7 +47,7 @@ git push -u origin main
 
 ### 📤1.3 Add Required GitHub Secrets (Required for CI/CD)
 
-After instrastructure deployment (**Section 2**) and before running the pipeline, configure these secrets in:
+Provision GitHub Actions repository secrets for the AWS Account ID and deployment region:
 
 - Go to **GitHub.com**
  - Open Your Repository
@@ -57,9 +57,6 @@ After instrastructure deployment (**Section 2**) and before running the pipeline
  - Add the repository secrets:
    - **AWS_ACCOUNT_ID** : (Your 12‑digit AWS account number)
    - **AWS_REGION** : (Region used for deployments (e.g., ap-southeast-1))
-   - **INSTANCE_ID** : (Ansible Controller Instance ID)
-
-> **Reminder:** *This section is to be completed only upon the completion of Section 2.0.*
 
 ## 🏗️ 2. Deploy Infrastructure with Terraform
 
@@ -180,10 +177,9 @@ vars:
   # #2. DEPLOYMENT PATHS
   app_path: "/home/ubuntu"
   raw_compose_url: "https://raw.githubusercontent.com/<your-username>/devops-bootcamp-project/main/app/docker-compose.yml"
-  domain_name: "web.your-domain.com"
 ```
 
-**Update `ecr_registry` , `raw_compose_url,`and `domain_name` fields**
+**Update `ecr_registry` and `raw_compose_url` fields**
 
 - **To Save**: Press `Ctrl + O` then `Enter`.
 - **To Exit**: Press `Ctrl + X`.
@@ -201,14 +197,10 @@ ansible all -m ping
 ansible-galaxy install -r requirements.yml
 ```
 
-> **Reminder:** *Revisit Section 1.2 and complete it before progressing to the next section.*
-
-## 🚀 5. Run the CI/CD Pipeline in GitHub Actions to deploy the  Web Server
+## 🚀 5. Run the CI/CD Pipeline in GitHub Actions to deploy the Web Application
 
 ### Initiate the Deployment
 Trigger the automated CI/CD pipeline to build your Docker image and deploy it to AWS EC2 via SSM ( `web-server.yml` ansible playbook):
-
-
 
 - Navigate to your **GitHub Repository** and click on the **Actions** tab.
 
@@ -221,21 +213,29 @@ Trigger the automated CI/CD pipeline to build your Docker image and deploy it to
 - Ensure the **Main** branch is selected and click the green **Run workflow** button.
 
 ### Verify the Deployment
-Once the workflow finishes, verify the results in the logs:
+Once the workflow finishes, verify the results in the action section:
 
 - Navigate to **Actions** → Click on the **Latest Run.**
 
-- Select the **deploy** job from the sidebar.
+- Select the **deploy** job from the sidebar and ensure it is **successful.**
 
-- Expand the **Trigger Deployment via SSM** step to view the Ansible output.
+- For more info on the deployment and troubleshooting you may use the **Systems Manager** feature in **AWS console**
 
-- Confirm the following:
-
-  - Status: The `web_server` should show **ok** or **changed.**
-
-  - Failures: Ensure the `failed` count is `0`.
+  - Log in to your **AWS Management Console**
+  - In the top search bar, type "**SSM**" or "**Systems Manager**" and select the service.
+  - On the left-hand sidebar, scroll down to **Node Tools** section and click on **Run Command**.
+  - Once inside the Run Command dashboard, click on the **Command history** tab
+  - Click on the latest **Command ID** with the comment "Triggering Ansible Deployment"
+  - Click on the **instance-id** and drop down the **Output** section
+  - To confirm if deployment was successful , the `web_server` should show `ok` or `changed`.
 
 > **Note**: *This pipeline has two main steps. First, the **Build** step creates a Docker image of your application and uploads it to Amazon ECR. Then, the **Deploy** step uses the Ansible Controller (through AWS SSM) to run the `web-server.yml` playbook which pulls the newest image, and redeploy the web server. You can watch both steps happen in real time on the GitHub Actions page, and the full workflow is located in `.github/workflows/deploy.yml.`*
+
+### 🚀 5.1 Verification and Connectivity Testing
+
+```bash
+http://web-server-public-ip
+```
 
 ## 🌐 6. DNS and TLS Management (Cloudflare)
 To make your application accessible via your domain, follow these steps:
