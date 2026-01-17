@@ -265,6 +265,7 @@ To make your application accessible via your domain, follow these steps:
    - **Name**: `web` (creates `web.yourdomain.com`)
    - **IPv4 address**: Your **Web Server Public IP**.
    - **Proxy status**: **Proxied** (Orange cloud enabled).
+   -   Click **Save**
 
 ### 🌐 6.2. SSL/TLS Encryption
 - Navigate to **SSL/TLS > Overview**.
