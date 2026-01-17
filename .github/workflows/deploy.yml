@@ -55,7 +55,7 @@ jobs:
             --targets "Key=tag:Name,Values=Ansible Controller" \
             --parameters 'commands=[
               "cd /home/ubuntu/ansible",
-              "sudo -u ubuntu ansible-playbook web-server.yml -e \"image_tag=${{ github.sha }}\""
+              "sudo -u ubuntu /home/ubuntu/.local/bin/ansible-playbook web-server.yml -e \"image_tag=${{ github.sha }}\""
             ]' \
             --query "Command.CommandId" \
             --output text)
