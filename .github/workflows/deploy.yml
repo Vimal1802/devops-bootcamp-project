@@ -46,23 +46,13 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-oidc-role
           aws-region: ${{ secrets.AWS_REGION }}
-
+          
       - name: Trigger Deployment via SSM
         run: |
-          # 1. Send the command to the Ansible Controller
-          COMMAND_ID=$(aws ssm send-command \
+          aws ssm send-command \
             --document-name "AWS-RunShellScript" \
             --targets "Key=tag:Name,Values=Ansible Controller" \
+            --comment "Triggering Ansible Deployment for ${{ github.sha }}" \
             --parameters 'commands=[
-              "cd /home/ubuntu/ansible",
-              "sudo -u ubuntu /home/ubuntu/.local/bin/ansible-playbook web-server.yml -e \"image_tag=${{ github.sha }}\""
-            ]' \
-            --query "Command.CommandId" \
-            --output text)
-          
-          echo "Deployment triggered: $COMMAND_ID"
-
-          # 2. Wait for completion (Success or Failure)
-          aws ssm wait command-executed \
-            --command-id "$COMMAND_ID" \
-            --targets "Key=tag:Name,Values=Ansible Controller"
+              "cd /home/ubuntu/ansible && sudo -u ubuntu /home/ubuntu/.local/bin/ansible-playbook web-server.yml -e \"image_tag=${{ github.sha }}\""
+            ]'
