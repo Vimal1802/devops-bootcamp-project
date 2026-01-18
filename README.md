@@ -134,8 +134,7 @@ This command downloads the required Terraform plugins:
 terraform init
 ```
 
-> ⚠️ **Important: Customize Before Deployment**
-*The Terraform configuration currently contains hard-coded resource names and values (e.g., final-project-vimaldeep). Before running the commands below, please search the `.tf` files and update the resources to match your own naming preference*
+> ⚠️ **Important: Customize Before Deployment** : *The Terraform configuration currently contains hard-coded resource names and values (e.g., final-project-vimaldeep). Before running the commands below, please search the `.tf` files and update the resources to match your own naming preference*
 
 **Check what Terraform will create**
 
